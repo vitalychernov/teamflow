@@ -1,0 +1,61 @@
+# ================================
+# Java / Maven (backend)
+# ================================
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# ================================
+# Spring Boot
+# ================================
+backend/src/main/resources/application-prod.yml
+backend/src/main/resources/application-local.yml
+
+# ================================
+# Node.js / React (frontend)
+# ================================
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+
+# ================================
+# Environment files (root level)
+# ================================
+.env
+.env.local
+.env.production
+*.env
+
+# ================================
+# IDE / Editor
+# ================================
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.DS_Store
+Thumbs.db
+
+# ================================
+# Docker
+# ================================
+docker-compose.override.yml
+
+# ================================
+# Logs
+# ================================
+logs/
+*.log
