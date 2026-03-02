@@ -1,0 +1,58 @@
+# ==========================================
+# Base configuration — shared across ALL environments.
+# Environment-specific values are in application-dev.yml
+# and application-prod.yml.
+# Active profile is set via SPRING_PROFILES_ACTIVE env var.
+# ==========================================
+
+spring:
+  application:
+    name: teamflow-backend
+
+  # Active profile: 'dev' by default.
+  # Override in production with env var: SPRING_PROFILES_ACTIVE=prod
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  # JPA shared config
+  jpa:
+    # Show SQL in logs (overridden per profile)
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        # Naming strategy: maps camelCase fields to snake_case columns
+        # e.g., createdAt -> created_at
+        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+
+# ==========================================
+# App-level custom properties
+# ==========================================
+app:
+  jwt:
+    # Secret key — MUST be overridden in prod via environment variable.
+    # Min 256 bits (32 chars) for HS256 algorithm.
+    secret: ${JWT_SECRET:dev-secret-key-change-this-in-production-min-32-chars}
+    # Token expiration in milliseconds (24 hours)
+    expiration: ${JWT_EXPIRATION:86400000}
+
+# ==========================================
+# Server
+# ==========================================
+server:
+  port: ${PORT:8080}
+  # Return structured error responses (not HTML)
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# ==========================================
+# Swagger / OpenAPI
+# ==========================================
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    # Expand all operations in Swagger UI by default
+    operations-sorter: method

@@ -1,0 +1,16 @@
+# ==========================================
+# EXAMPLE config — copy this to application-local.yml
+# and fill in your values for local development.
+# application-local.yml is in .gitignore (never committed).
+# ==========================================
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/teamflow_dev
+    username: YOUR_DB_USERNAME
+    password: YOUR_DB_PASSWORD
+
+app:
+  jwt:
+    secret: your-local-secret-key-min-32-characters-long
+    expiration: 86400000

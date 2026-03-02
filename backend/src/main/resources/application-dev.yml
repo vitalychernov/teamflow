@@ -1,0 +1,27 @@
+# ==========================================
+# DEV profile — local development only.
+# This file is committed to git (no secrets here).
+# Uses local PostgreSQL via Docker Compose.
+# ==========================================
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/teamflow_dev
+    username: teamflow
+    password: teamflow
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    # create-drop: recreates schema on every restart.
+    # WARNING: destroys all data. Only for dev.
+    # Alternative: 'update' keeps data but risks schema drift.
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+# Verbose logging in dev
+logging:
+  level:
+    com.teamflow: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
