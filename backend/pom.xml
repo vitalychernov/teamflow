@@ -150,6 +150,30 @@
     <build>
         <plugins>
             <!-- ==========================================
+                 Maven Compiler Plugin:
+                 Explicitly set Java 17 source/target.
+                 Without this, IntelliJ defaults to Java 5
+                 even if java.version property is defined.
+                 'release' is preferred over source+target —
+                 it also restricts access to internal JDK APIs.
+            ========================================== -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${java.version}</release>
+                    <annotationProcessorPaths>
+                        <!-- Lombok must be on annotation processor path
+                             so IntelliJ and Maven both process @Getter etc. -->
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <!-- ==========================================
                  Spring Boot Maven Plugin:
                  - Packages the app as executable JAR
                  - 'mvn spring-boot:run' for local dev
