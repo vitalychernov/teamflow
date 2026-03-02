@@ -44,14 +44,18 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        // Validate email uniqueness before attempting insert
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new EmailAlreadyExistsException(request.getEmail());
+        // Normalize email first — before any check or save.
+        // This ensures "Alice@EXAMPLE.COM" and "alice@example.com"
+        // are treated as the same user at every step.
+        String email = request.getEmail().toLowerCase();
+
+        if (userRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException(email);
         }
 
         User user = User.builder()
                 .name(request.getName())
-                .email(request.getEmail().toLowerCase())   // normalize email
+                .email(email)
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
