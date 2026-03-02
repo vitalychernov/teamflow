@@ -1,26 +1,20 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # Stage 1 — Builder
-# Compiles the source and produces a fat JAR with all dependencies.
-# Uses the full JDK + Maven. This layer is discarded in the final image.
+# Uses the official Maven image (includes JDK 17 + Maven pre-installed).
+# No wrapper script needed — avoids Windows/Linux mvnw compatibility issues.
 # ─────────────────────────────────────────────────────────────────────────────
-FROM eclipse-temurin:17-jdk-alpine AS builder
+FROM maven:3.9-eclipse-temurin-17-alpine AS builder
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml first — Docker caches this layer.
+# Copy pom.xml first — Docker caches this layer.
 # Dependencies are re-downloaded only when pom.xml changes, not on every build.
-COPY mvnw.cmd ./mvnw
 COPY pom.xml ./
+RUN mvn dependency:go-offline -q
 
-# Fix line endings and make wrapper executable (pom was created on Windows)
-RUN sed -i 's/\r//' mvnw && chmod +x mvnw
-
-# Download dependencies (cached layer — runs only when pom.xml changes)
-RUN ./mvnw dependency:go-offline -q
-
-# Copy source code and build, skipping tests (tests run in CI, not in Docker build)
+# Copy source and build, skipping tests (tests run in CI, not Docker build)
 COPY src ./src
-RUN ./mvnw package -DskipTests -q
+RUN mvn package -DskipTests -q
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Stage 2 — Runtime
