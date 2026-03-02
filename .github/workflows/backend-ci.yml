@@ -1,0 +1,54 @@
+# CI pipeline for TeamFlow backend.
+# Runs on every push/PR to main — builds the project and runs all tests.
+#
+# Test breakdown:
+#   @DataJpaTest     — repository tests, use H2 in-memory DB (no PostgreSQL needed)
+#   @ExtendWith(Mockito) — service unit tests, pure JUnit (no Spring context)
+#   @WebMvcTest      — controller tests, MockMvc + Spring Security (no real server)
+#
+# No external dependencies required: CI runs fully offline thanks to H2.
+
+name: Backend CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+
+jobs:
+  test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          # Cache Maven local repository — speeds up subsequent runs significantly
+          cache: maven
+
+      - name: Run tests
+        working-directory: backend
+        # Use system mvn (pre-installed on ubuntu-latest).
+        # We only have mvnw.cmd (Windows wrapper), not the Unix mvnw script.
+        run: mvn verify -q
+
+      - name: Upload test reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: backend/target/surefire-reports/
+          retention-days: 7
