@@ -5,6 +5,7 @@ import com.teamflow.dto.request.LoginRequest;
 import com.teamflow.dto.request.RegisterRequest;
 import com.teamflow.dto.response.AuthResponse;
 import com.teamflow.exception.EmailAlreadyExistsException;
+import com.teamflow.config.SecurityConfig;
 import com.teamflow.security.CustomUserDetailsService;
 import com.teamflow.security.JwtService;
 import com.teamflow.service.AuthService;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -38,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * We verify: status codes, JSON response structure, headers.
  */
 @WebMvcTest(AuthController.class)
+@Import(SecurityConfig.class)
 @ActiveProfiles("test")
 @DisplayName("AuthController Tests")
 class AuthControllerTest {
@@ -76,6 +80,7 @@ class AuthControllerTest {
         given(authService.register(any())).willReturn(response);
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -93,6 +98,7 @@ class AuthControllerTest {
         request.setPassword("password123");
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -109,6 +115,7 @@ class AuthControllerTest {
         request.setPassword("password123");
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -124,6 +131,7 @@ class AuthControllerTest {
         request.setPassword("123");  // < 6 chars
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -142,6 +150,7 @@ class AuthControllerTest {
                 .willThrow(new EmailAlreadyExistsException("taken@example.com"));
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isConflict())
@@ -166,6 +175,7 @@ class AuthControllerTest {
         given(authService.login(any())).willReturn(response);
 
         mockMvc.perform(post("/api/auth/login")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -183,6 +193,7 @@ class AuthControllerTest {
                 .willThrow(new BadCredentialsException("Bad credentials"));
 
         mockMvc.perform(post("/api/auth/login")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isUnauthorized())

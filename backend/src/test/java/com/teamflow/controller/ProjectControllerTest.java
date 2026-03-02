@@ -8,6 +8,7 @@ import com.teamflow.entity.Role;
 import com.teamflow.entity.User;
 import com.teamflow.exception.ForbiddenException;
 import com.teamflow.exception.ResourceNotFoundException;
+import com.teamflow.config.SecurityConfig;
 import com.teamflow.security.CustomUserDetails;
 import com.teamflow.security.CustomUserDetailsService;
 import com.teamflow.security.JwtService;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
@@ -26,6 +28,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -40,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * CustomUserDetails class, making @AuthenticationPrincipal work correctly.
  */
 @WebMvcTest(ProjectController.class)
+@Import(SecurityConfig.class)
 @ActiveProfiles("test")
 @DisplayName("ProjectController Tests")
 class ProjectControllerTest {
@@ -105,6 +109,7 @@ class ProjectControllerTest {
 
         mockMvc.perform(post("/api/projects")
                         .with(SecurityMockMvcRequestPostProcessors.user(userDetails))
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -120,6 +125,7 @@ class ProjectControllerTest {
 
         mockMvc.perform(post("/api/projects")
                         .with(SecurityMockMvcRequestPostProcessors.user(userDetails))
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -163,7 +169,8 @@ class ProjectControllerTest {
     @DisplayName("DELETE /projects/{id}: 204 No Content on success")
     void deleteProject_success_returns204() throws Exception {
         mockMvc.perform(delete("/api/projects/1")
-                        .with(SecurityMockMvcRequestPostProcessors.user(userDetails)))
+                        .with(SecurityMockMvcRequestPostProcessors.user(userDetails))
+                        .with(csrf()))
                 .andExpect(status().isNoContent());
     }
 }
