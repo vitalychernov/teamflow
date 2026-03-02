@@ -27,5 +27,27 @@ services:
       timeout: 5s
       retries: 5
 
+  # ==========================================
+  # Backend — Spring Boot app (built from source).
+  # Starts only after postgres is healthy.
+  # ==========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: teamflow-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/teamflow_dev
+      SPRING_DATASOURCE_USERNAME: teamflow
+      SPRING_DATASOURCE_PASSWORD: teamflow
+      JWT_SECRET: local-dev-secret-change-in-production-must-be-long-enough
+      JWT_EXPIRATION: 86400000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:
