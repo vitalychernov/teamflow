@@ -29,4 +29,9 @@ public class ProjectResponse {
     private UserResponse owner;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    // Task completion stats — populated by ProjectService
+    @Builder.Default
+    private int totalTasks = 0;
+    @Builder.Default
+    private int doneTasks = 0;
 }

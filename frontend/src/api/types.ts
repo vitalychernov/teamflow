@@ -34,6 +34,8 @@ export interface Project {
   owner: ProjectOwner
   createdAt: string
   updatedAt: string
+  totalTasks: number
+  doneTasks: number
 }
 
 export interface CreateProjectRequest {

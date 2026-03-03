@@ -58,6 +58,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
      */
     Page<Task> findByAssigneeId(Long assigneeId, Pageable pageable);
 
+    /** Count all tasks in a project — used for completion percentage. */
+    long countByProjectId(Long projectId);
+
     /**
      * Count tasks by status for a project — useful for board statistics.
      * Returns a single long value, no pagination needed.

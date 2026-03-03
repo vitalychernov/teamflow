@@ -5,11 +5,13 @@ import com.teamflow.dto.request.UpdateProjectRequest;
 import com.teamflow.dto.response.PageResponse;
 import com.teamflow.dto.response.ProjectResponse;
 import com.teamflow.entity.Project;
+import com.teamflow.entity.TaskStatus;
 import com.teamflow.entity.User;
 import com.teamflow.exception.ForbiddenException;
 import com.teamflow.exception.ResourceNotFoundException;
 import com.teamflow.mapper.ProjectMapper;
 import com.teamflow.repository.ProjectRepository;
+import com.teamflow.repository.TaskRepository;
 import com.teamflow.repository.UserRepository;
 import com.teamflow.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +27,7 @@ import org.springframework.util.StringUtils;
  * Authorization rules (enforced at service level):
  * - Any authenticated user can create projects
  * - Only the owner OR an ADMIN can update/delete a project
- * - Any authenticated user can read projects (their own)
- * - ADMIN can read all projects
+ * - Any authenticated user can read projects (shared workspace)
  *
  * Why pass CustomUserDetails instead of just userId?
  * It carries both userId and isAdmin() — avoids two separate parameters.
@@ -44,6 +45,7 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
     private final ProjectMapper projectMapper;
 
     @Transactional(readOnly = true)
@@ -60,14 +62,14 @@ public class ProjectService {
             projects = projectRepository.findAll(pageable);
         }
 
-        return PageResponse.from(projects.map(projectMapper::toResponse));
+        return PageResponse.from(projects.map(p -> enrichWithStats(projectMapper.toResponse(p))));
     }
 
     @Transactional(readOnly = true)
     public ProjectResponse getProjectById(Long projectId, CustomUserDetails currentUser) {
         Project project = findProjectOrThrow(projectId);
         validateReadAccess(project, currentUser);
-        return projectMapper.toResponse(project);
+        return enrichWithStats(projectMapper.toResponse(project));
     }
 
     @Transactional
@@ -82,7 +84,7 @@ public class ProjectService {
                 .owner(owner)
                 .build();
 
-        return projectMapper.toResponse(projectRepository.save(project));
+        return enrichWithStats(projectMapper.toResponse(projectRepository.save(project)));
     }
 
     @Transactional
@@ -95,7 +97,7 @@ public class ProjectService {
         project.setName(request.getName());
         project.setDescription(request.getDescription());
 
-        return projectMapper.toResponse(projectRepository.save(project));
+        return enrichWithStats(projectMapper.toResponse(projectRepository.save(project)));
     }
 
     @Transactional
@@ -109,6 +111,15 @@ public class ProjectService {
     // ─────────────────────────────────────────
     // Private helpers
     // ─────────────────────────────────────────
+
+    /** Appends task completion stats to a ProjectResponse. */
+    private ProjectResponse enrichWithStats(ProjectResponse response) {
+        int total = (int) taskRepository.countByProjectId(response.getId());
+        int done  = (int) taskRepository.countByProjectIdAndStatus(response.getId(), TaskStatus.DONE);
+        response.setTotalTasks(total);
+        response.setDoneTasks(done);
+        return response;
+    }
 
     private Project findProjectOrThrow(Long projectId) {
         return projectRepository.findById(projectId)

@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  scrollbar-gutter: stable;
+}
+
 /* Reset body from Vite default — Tailwind handles layout */
 body {
   margin: 0;

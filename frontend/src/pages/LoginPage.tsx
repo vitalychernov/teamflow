@@ -47,8 +47,8 @@ export function LoginPage() {
 
         {/* Demo credentials */}
         <div className="mb-5 p-3 bg-blue-50 border border-blue-100 rounded-lg">
-          <p className="text-xs font-semibold text-blue-700 mb-2">Try a demo account:</p>
-          <div className="flex flex-wrap gap-2">
+          <p className="text-xs font-semibold text-blue-700 mb-2 text-center">Try a demo account:</p>
+          <div className="flex flex-wrap gap-2 justify-center">
             {DEMO_ACCOUNTS.map((acc) => (
               <button
                 key={acc.email}
