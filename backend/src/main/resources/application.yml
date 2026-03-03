@@ -47,6 +47,20 @@ server:
     include-binding-errors: always
 
 # ==========================================
+# Actuator — health check endpoint for Render
+# ==========================================
+management:
+  endpoints:
+    web:
+      # Expose only /actuator/health — nothing else (metrics, env, etc. stay hidden)
+      exposure:
+        include: health
+  endpoint:
+    health:
+      # "always" so Render gets a 200 response even when DB is starting up
+      show-details: never
+
+# ==========================================
 # Swagger / OpenAPI
 # ==========================================
 springdoc:

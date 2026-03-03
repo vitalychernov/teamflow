@@ -125,6 +125,17 @@
         </dependency>
 
         <!-- ==========================================
+             ACTUATOR: Exposes /actuator/health endpoint.
+             Used by Render (and other platforms) to check
+             that the service is up after deployment.
+             Only /health is exposed — no sensitive info.
+        ========================================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- ==========================================
              TESTING: JUnit 5 + Mockito + MockMvc
              Provided by spring-boot-starter-test.
              H2 is an in-memory DB for tests only.

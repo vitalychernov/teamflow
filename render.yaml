@@ -1,0 +1,52 @@
+# Render Blueprint — defines all infrastructure as code.
+# Render reads this file and creates the database + web service automatically.
+# Docs: https://render.com/docs/blueprint-spec
+
+databases:
+  - name: teamflow-db
+    databaseName: teamflow
+    user: teamflow
+    plan: free
+
+services:
+  - type: web
+    name: teamflow-backend
+    plan: free
+    runtime: docker
+    # Path to the directory containing the Dockerfile
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+
+    # Auto-deploy on every push to main
+    branch: main
+    autoDeploy: true
+
+    # Health check — Render uses this to verify the service is up after deploy
+    healthCheckPath: /actuator/health
+
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+
+      # Render injects these automatically from the linked database
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: teamflow-db
+          property: connectionString
+
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: teamflow-db
+          property: user
+
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: teamflow-db
+          property: password
+
+      # Set this manually in Render dashboard — never commit real secrets to git
+      - key: JWT_SECRET
+        sync: false
+
+      - key: JWT_EXPIRATION
+        value: "86400000"
