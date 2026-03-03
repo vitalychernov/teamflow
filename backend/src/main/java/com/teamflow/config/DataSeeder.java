@@ -50,13 +50,13 @@ public class DataSeeder implements ApplicationRunner {
                 .build());
 
         User alice = userRepository.save(User.builder()
-                .name("Alice Chen")
+                .name("User")
                 .email("alice@teamflow.com")
                 .password(passwordEncoder.encode("demo123"))
                 .build());
 
         User bob = userRepository.save(User.builder()
-                .name("Bob Martin")
+                .name("Member")
                 .email("bob@teamflow.com")
                 .password(passwordEncoder.encode("demo123"))
                 .build());
@@ -198,7 +198,7 @@ public class DataSeeder implements ApplicationRunner {
 
         log.info("DataSeeder: done. Created 3 users, 3 projects, 13 tasks.");
         log.info("  admin@teamflow.com  / admin123  (ADMIN)");
-        log.info("  alice@teamflow.com  / demo123");
-        log.info("  bob@teamflow.com    / demo123");
+        log.info("  alice@teamflow.com  / demo123   (User)");
+        log.info("  bob@teamflow.com    / demo123   (Member)");
     }
 }

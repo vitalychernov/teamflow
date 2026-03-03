@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext'
 import type { ApiError } from '../api/types'
 
 const DEMO_ACCOUNTS = [
-  { label: 'Alice (user)', email: 'alice@teamflow.com', password: 'demo123' },
+  { label: 'User', email: 'alice@teamflow.com', password: 'demo123' },
   { label: 'Admin', email: 'admin@teamflow.com', password: 'admin123' },
 ]
 
