@@ -1,111 +1,53 @@
-# TeamFlow — Project & Task Management SaaS
+# TeamFlow
 
-> A production-ready full-stack SaaS application for project and task management, inspired by Jira/Asana.
+TeamFlow is a full-stack project management application inspired by Jira and Asana. It features a kanban board with drag-and-drop task management, role-based access control, team member assignment, and a real-time progress indicator per project.
 
-[![Backend CI](https://github.com/vitalychernov/teamflow/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/vitalychernov/teamflow/actions)
-[![Frontend Deploy](https://img.shields.io/badge/frontend-vercel-black)](https://teamflow.vercel.app)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+## Key Features
 
----
+The application supports user registration and JWT-based authentication, project creation with completion tracking, and a three-column kanban board (To Do / In Progress / Done) with drag-and-drop powered by @dnd-kit. Tasks include priority levels, optional descriptions, and assignee management. An "Assigned to me" filter lets users focus on their own work. Admin users have access to a separate user management panel. All UI updates are optimistic — cards move instantly without waiting for the server.
 
-## Tech Stack
+## Technology Foundation
 
-### Backend
-- Java 17 + Spring Boot 3.x
-- Spring Security + JWT
-- Spring Data JPA + PostgreSQL
-- Maven
-- Swagger / OpenAPI 3
+**Backend**: Java 17 with Spring Boot 3, Spring Security and JWT authentication, Spring Data JPA with PostgreSQL, Maven, and Swagger / OpenAPI 3 for API documentation.
 
-### Frontend
-- React 18 + TypeScript
-- React Query (TanStack Query)
-- Axios + JWT interceptor
-- Context API (auth state)
-- Vite
+**Frontend**: React 18 and TypeScript with Vite, TanStack React Query for server state and optimistic updates, Axios with a JWT interceptor, Context API for auth state, Tailwind CSS v4, and @dnd-kit/core for drag-and-drop.
 
-### DevOps
-- Docker + Docker Compose
-- Render Free (backend + PostgreSQL)
-- Vercel Free (frontend)
-- GitHub Actions (CI/CD)
-
----
-
-## Features
-
-- [x] User registration & login (JWT)
-- [x] Role-based access control (USER / ADMIN)
-- [x] Project CRUD with ownership
-- [x] Task CRUD with assignment
-- [x] Pagination & filtering
-- [x] Global exception handling
-- [x] API documentation (Swagger UI)
-- [x] Protected frontend routes
-- [x] Dockerized deployment
-
----
-
-## Project Structure
-
-```
-teamflow/
-├── backend/        # Spring Boot application
-├── frontend/       # React + TypeScript SPA
-├── docker-compose.yml
-└── README.md
-```
-
----
+**Infrastructure**: Docker and Docker Compose for local development, Render Free for backend and PostgreSQL, Vercel for the frontend, and GitHub Actions for CI.
 
 ## Getting Started
 
-### Prerequisites
-- Java 17+
-- Node.js 18+
-- Docker & Docker Compose
-- PostgreSQL (or use Docker)
-
-### Run locally with Docker Compose
+Prerequisites: Java 17+, Node.js 18+, Docker and Docker Compose.
 
 ```bash
-cp backend/src/main/resources/application-example.yml \
-   backend/src/main/resources/application-local.yml
-# Edit application-local.yml with your DB credentials
-
+git clone https://github.com/vitalychernov/teamflow.git
+cd teamflow
 docker-compose up --build
 ```
 
-- Backend: http://localhost:8080
-- Swagger UI: http://localhost:8080/swagger-ui.html
 - Frontend: http://localhost:5173
+- Backend API: http://localhost:8080
+- Swagger UI: http://localhost:8080/swagger-ui.html
 
----
+The database is seeded automatically on first startup with demo users and sample projects.
 
-## API Overview
+## Demo Credentials
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/api/auth/register` | Public | Register new user |
-| POST | `/api/auth/login` | Public | Login, receive JWT |
-| GET | `/api/projects` | USER+ | List projects (paginated) |
-| POST | `/api/projects` | USER+ | Create project |
-| GET | `/api/projects/{id}/tasks` | USER+ | List tasks with filters |
-| POST | `/api/projects/{id}/tasks` | USER+ | Create task |
-| GET | `/api/admin/users` | ADMIN | List all users |
+| Email | Password | Role |
+|-------|----------|------|
+| john.smith@teamflow.com | demo123 | User |
+| sarah.wilson@teamflow.com | demo123 | User |
+| admin@teamflow.com | admin123 | Admin |
 
-Full API docs available at `/swagger-ui.html` when running locally.
+## Testing
 
----
+Backend tests cover the repository layer with `@DataJpaTest`, the service layer with Mockito unit tests, and the controller layer with `@WebMvcTest`. Run them with:
+
+```bash
+cd backend && mvn test
+```
 
 ## Deployment
 
-- **Backend**: Deployed on [Render Free](https://render.com)
-- **Frontend**: Deployed on [Vercel](https://vercel.com)
-- **Database**: PostgreSQL on Render Free
+The backend is deployed on [Render Free](https://render.com) with a managed PostgreSQL database. The frontend is deployed on [Vercel](https://vercel.com) with automatic deploys on every push to `main`.
 
----
-
-## License
-
-MIT
+**Live demo**: https://teamflow-psi.vercel.app
