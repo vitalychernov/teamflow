@@ -19,11 +19,15 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// Response interceptor — redirect to login on 401 (token expired or invalid).
+// Response interceptor — redirect to login when an authenticated session expires.
+// IMPORTANT: only redirect if a token exists in localStorage.
+// Without this guard, the /api/auth/login endpoint also returns 401 on wrong
+// credentials, which would cause an infinite reload loop on the login page.
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const hasToken = Boolean(localStorage.getItem('token'))
+    if (error.response?.status === 401 && hasToken) {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       window.location.href = '/login'

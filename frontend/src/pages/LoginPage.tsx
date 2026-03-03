@@ -1,5 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { authApi } from '../features/auth/authApi'
 import { useAuth } from '../context/AuthContext'
@@ -15,6 +15,7 @@ export function LoginPage() {
   const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
 
   const mutation = useMutation({
     mutationFn: authApi.login,
@@ -22,28 +23,21 @@ export function LoginPage() {
       login(data)
       navigate('/projects')
     },
+    onError: (err: { response?: { data?: ApiError } }) => {
+      setError(err.response?.data?.message ?? 'Cannot connect to server. Make sure the backend is running.')
+    },
   })
-
-  // Derive the error message directly from mutation state — no separate useState.
-  // This prevents the "flash" bug: previously setError('') ran synchronously
-  // before the request completed, making the error disappear for a split second.
-  // Now the error is tied to mutation lifecycle:
-  //   idle/pending → no error shown
-  //   error        → error shown until user retries
-  const errorMsg = mutation.isError
-    ? ((mutation.error as { response?: { data?: ApiError } })?.response?.data?.message
-        ?? 'Cannot connect to server. Make sure the backend is running.')
-    : null
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setError('')
     mutation.mutate({ email, password })
   }
 
   const fillDemo = (demoEmail: string, demoPassword: string) => {
     setEmail(demoEmail)
     setPassword(demoPassword)
-    mutation.reset() // clear previous error when switching demo accounts
+    setError('')
   }
 
   return (
@@ -72,10 +66,9 @@ export function LoginPage() {
           </div>
         </div>
 
-        {/* Error — visible while mutation.isError is true, cleared on next mutate() */}
-        {errorMsg && (
+        {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-300 text-red-700 rounded-lg text-sm font-medium">
-            {errorMsg}
+            {error}
           </div>
         )}
 
