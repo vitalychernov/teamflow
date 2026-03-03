@@ -334,7 +334,24 @@ export function ProjectDetailPage() {
         status,
       })
     },
-    onSuccess: () => {
+    // Move card instantly in UI; roll back if API fails
+    onMutate: async ({ taskId, status }) => {
+      await queryClient.cancelQueries({ queryKey: ['tasks', projectId] })
+      const previousTasks = queryClient.getQueryData(['tasks', projectId, filterAssignedToMe])
+      queryClient.setQueryData(
+        ['tasks', projectId, filterAssignedToMe],
+        (old: typeof tasks) => old
+          ? { ...old, content: old.content.map((t) => t.id === taskId ? { ...t, status } : t) }
+          : old
+      )
+      return { previousTasks }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousTasks !== undefined) {
+        queryClient.setQueryData(['tasks', projectId, filterAssignedToMe], context.previousTasks)
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks', projectId] })
       queryClient.invalidateQueries({ queryKey: ['projects'] })
     },
