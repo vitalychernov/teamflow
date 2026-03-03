@@ -2,6 +2,7 @@ package com.teamflow.service;
 
 import com.teamflow.dto.response.PageResponse;
 import com.teamflow.dto.response.UserResponse;
+import com.teamflow.entity.Role;
 import com.teamflow.mapper.UserMapper;
 import com.teamflow.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +31,10 @@ public class UserService {
         );
     }
 
-    /** Returns all users sorted by name — used for assignee dropdown. */
+    /** Returns all non-admin users sorted by name — used for assignee dropdown. */
     @Transactional(readOnly = true)
     public List<UserResponse> getAllUsersList() {
-        return userRepository.findAll(Sort.by("name"))
+        return userRepository.findByRoleNot(Role.ADMIN, Sort.by("name"))
                 .stream()
                 .map(userMapper::toResponse)
                 .toList();
