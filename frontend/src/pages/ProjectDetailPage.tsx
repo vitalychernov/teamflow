@@ -71,20 +71,23 @@ export function ProjectDetailPage() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-5">
         <button
           onClick={() => navigate('/projects')}
           className="text-sm text-gray-500 hover:text-blue-600 mb-2 flex items-center gap-1"
         >
           ← Projects
         </button>
-        <h1 className="text-2xl font-bold text-gray-900">{project?.name}</h1>
-        {project?.description && <p className="text-gray-500 mt-1">{project.description}</p>}
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 break-words">{project?.name}</h1>
+        {project?.description && (
+          <p className="text-gray-500 mt-1 text-sm">{project.description}</p>
+        )}
       </div>
 
-      {/* Toolbar */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex gap-2">
+      {/* Toolbar — stacks vertically on mobile, side-by-side on sm+ */}
+      <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
+        {/* Status filter pills — wrap when narrow */}
+        <div className="flex flex-wrap gap-2">
           {(['', 'TODO', 'IN_PROGRESS', 'DONE'] as const).map((s) => (
             <button
               key={s}
@@ -95,13 +98,15 @@ export function ProjectDetailPage() {
                   : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400'
               }`}
             >
-              {s || 'All'}
+              {s === '' ? 'All' : s.replace('_', ' ')}
             </button>
           ))}
         </div>
+
+        {/* Full-width on mobile, auto-width on sm+ */}
         <button
           onClick={() => setShowCreate(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg"
+          className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg w-full sm:w-auto"
         >
           + Add Task
         </button>
@@ -135,7 +140,7 @@ export function ProjectDetailPage() {
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value as TaskPriority)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="LOW">Low priority</option>
               <option value="MEDIUM">Medium priority</option>
@@ -172,42 +177,46 @@ export function ProjectDetailPage() {
         {tasks?.content.map((task) => (
           <div
             key={task.id}
-            className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex items-start justify-between"
+            className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm"
           >
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-medium text-gray-900 text-sm">{task.title}</span>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[task.status]}`}>
-                  {task.status.replace('_', ' ')}
-                </span>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${PRIORITY_COLORS[task.priority]}`}>
-                  {task.priority}
-                </span>
+            {/* Title row + delete button */}
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-medium text-gray-900 text-sm">{task.title}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${STATUS_COLORS[task.status]}`}>
+                    {task.status.replace('_', ' ')}
+                  </span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${PRIORITY_COLORS[task.priority]}`}>
+                    {task.priority}
+                  </span>
+                </div>
+                {task.description && (
+                  <p className="text-xs text-gray-400 mt-1">{task.description}</p>
+                )}
+                {task.assignee && (
+                  <p className="text-xs text-gray-400 mt-1">→ {task.assignee.name}</p>
+                )}
               </div>
-              {task.description && (
-                <p className="text-xs text-gray-400 mt-1">{task.description}</p>
-              )}
-              {task.assignee && (
-                <p className="text-xs text-gray-400 mt-1">→ {task.assignee.name}</p>
-              )}
+              <button
+                onClick={() => { if (confirm('Delete task?')) deleteTask.mutate(task.id) }}
+                className="text-xs text-red-400 hover:text-red-600 shrink-0 pt-0.5"
+              >
+                ✕
+              </button>
             </div>
-            <div className="flex items-center gap-2 ml-4 shrink-0">
-              {/* Quick status change */}
+
+            {/* Status select — below content, full-width on mobile */}
+            <div className="mt-3 pt-3 border-t border-gray-100">
               <select
                 value={task.status}
                 onChange={(e) => updateStatus.mutate({ taskId: task.id, status: e.target.value as TaskStatus })}
-                className="text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none"
+                className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none w-full sm:w-auto bg-white"
               >
                 <option value="TODO">TODO</option>
                 <option value="IN_PROGRESS">IN PROGRESS</option>
                 <option value="DONE">DONE</option>
               </select>
-              <button
-                onClick={() => { if (confirm('Delete task?')) deleteTask.mutate(task.id) }}
-                className="text-xs text-red-400 hover:text-red-600"
-              >
-                ✕
-              </button>
             </div>
           </div>
         ))}
