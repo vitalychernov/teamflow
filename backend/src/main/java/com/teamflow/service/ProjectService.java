@@ -22,22 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 /**
- * Business logic for Project CRUD operations.
+ * Business logic for Project CRUD.
  *
- * Authorization rules (enforced at service level):
- * - Any authenticated user can create projects
- * - Only the owner OR an ADMIN can update/delete a project
- * - Any authenticated user can read projects (shared workspace)
- *
- * Why pass CustomUserDetails instead of just userId?
- * It carries both userId and isAdmin() — avoids two separate parameters.
- * The service doesn't interact with Spring Security directly — it just
- * reads data from the already-authenticated principal.
- *
- * @Transactional(readOnly = true) on read methods:
- * - Keeps JPA session open → avoids LazyInitializationException
- *   when mappers access owner (LAZY-loaded association)
- * - Tells the DB driver it's a read-only transaction (can optimize)
+ * Authorization: any user can create/read projects;
+ * only owner or ADMIN can update/delete.
  */
 @Service
 @RequiredArgsConstructor
@@ -55,10 +43,8 @@ public class ProjectService {
         Page<Project> projects;
 
         if (StringUtils.hasText(keyword)) {
-            // Shared workspace: search by name across all projects
             projects = projectRepository.searchByName(keyword, pageable);
         } else {
-            // Shared workspace: all users see all projects
             projects = projectRepository.findAll(pageable);
         }
 
@@ -104,7 +90,6 @@ public class ProjectService {
     public void deleteProject(Long projectId, CustomUserDetails currentUser) {
         Project project = findProjectOrThrow(projectId);
         validateWriteAccess(project, currentUser);
-        // cascade = ALL → deletes all tasks automatically
         projectRepository.delete(project);
     }
 
@@ -128,7 +113,6 @@ public class ProjectService {
     }
 
     private void validateReadAccess(Project project, CustomUserDetails currentUser) {
-        // Shared workspace: all authenticated users can read any project
     }
 
     private void validateWriteAccess(Project project, CustomUserDetails currentUser) {

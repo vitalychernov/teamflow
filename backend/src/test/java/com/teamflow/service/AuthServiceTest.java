@@ -29,20 +29,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-/**
- * Unit tests for AuthService.
- *
- * @ExtendWith(MockitoExtension.class): activates Mockito for this test class.
- * @Mock: creates a mock (fake) implementation of the dependency.
- * @InjectMocks: creates AuthService and injects all @Mock fields into it.
- *
- * Mockito BDD style (given/when/then):
- * - given(...).willReturn(...) — define what mock returns
- * - then verify(...) — assert that methods were called
- *
- * We test ONLY AuthService logic, not the dependencies.
- * The mocks simulate what the real objects would return.
- */
+/** Unit tests for AuthService. */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AuthService Tests")
 class AuthServiceTest {
@@ -73,13 +60,10 @@ class AuthServiceTest {
 
         AuthResponse response = authService.register(request);
 
-        // Verify response content
         assertThat(response.getToken()).isEqualTo("jwt-token");
         assertThat(response.getEmail()).isEqualTo("alice@example.com");
         assertThat(response.getName()).isEqualTo("Alice");
         assertThat(response.getRole()).isEqualTo("USER");
-
-        // Verify that save was actually called
         verify(userRepository).save(any(User.class));
     }
 
@@ -97,7 +81,6 @@ class AuthServiceTest {
                 .isInstanceOf(EmailAlreadyExistsException.class)
                 .hasMessageContaining("taken@example.com");
 
-        // Verify save was NEVER called — we fail fast before touching the DB
         verify(userRepository, never()).save(any());
     }
 
@@ -132,7 +115,6 @@ class AuthServiceTest {
 
         authService.register(request);
 
-        // passwordEncoder.encode must have been called — password must be hashed
         verify(passwordEncoder).encode("plain-password");
     }
 
@@ -155,9 +137,8 @@ class AuthServiceTest {
                 .role(Role.USER)
                 .build();
 
-        // authenticationManager.authenticate() returns on success (no exception)
         given(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .willReturn(null); // return value unused by AuthService
+                .willReturn(null);
         given(userRepository.findByEmail("alice@example.com")).willReturn(Optional.of(user));
         given(jwtService.generateToken("alice@example.com")).willReturn("jwt-token");
 
@@ -175,14 +156,12 @@ class AuthServiceTest {
         request.setEmail("alice@example.com");
         request.setPassword("wrong-password");
 
-        // AuthenticationManager throws BadCredentialsException for wrong credentials
         given(authenticationManager.authenticate(any()))
                 .willThrow(new BadCredentialsException("Bad credentials"));
 
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(BadCredentialsException.class);
 
-        // Verify we never even looked up the user after failed auth
         verify(userRepository, never()).findByEmail(anyString());
     }
 }

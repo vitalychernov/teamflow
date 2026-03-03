@@ -21,7 +21,6 @@ export function AdminPage() {
     <div>
       <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-5">All Users</h1>
 
-      {/* overflow-x-auto prevents table from breaking the layout on narrow screens */}
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden overflow-x-auto">
         <table className="w-full text-sm min-w-[480px]">
           <thead className="bg-gray-50 border-b border-gray-200">

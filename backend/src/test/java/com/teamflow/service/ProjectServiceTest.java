@@ -12,6 +12,7 @@ import com.teamflow.exception.ForbiddenException;
 import com.teamflow.exception.ResourceNotFoundException;
 import com.teamflow.mapper.ProjectMapper;
 import com.teamflow.repository.ProjectRepository;
+import com.teamflow.repository.TaskRepository;
 import com.teamflow.repository.UserRepository;
 import com.teamflow.security.CustomUserDetails;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +33,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -43,6 +43,7 @@ class ProjectServiceTest {
 
     @Mock private ProjectRepository projectRepository;
     @Mock private UserRepository userRepository;
+    @Mock private TaskRepository taskRepository;
     @Mock private ProjectMapper projectMapper;
 
     @InjectMocks
@@ -88,6 +89,8 @@ class ProjectServiceTest {
     void getProjectById_owner_returnsProject() {
         given(projectRepository.findById(10L)).willReturn(Optional.of(project));
         given(projectMapper.toResponse(project)).willReturn(projectResponse);
+        given(taskRepository.countByProjectId(10L)).willReturn(0L);
+        given(taskRepository.countByProjectIdAndStatus(any(), any())).willReturn(0L);
 
         ProjectResponse result = projectService.getProjectById(10L, ownerDetails);
 
@@ -99,6 +102,8 @@ class ProjectServiceTest {
     void getProjectById_admin_returnsProject() {
         given(projectRepository.findById(10L)).willReturn(Optional.of(project));
         given(projectMapper.toResponse(project)).willReturn(projectResponse);
+        given(taskRepository.countByProjectId(10L)).willReturn(0L);
+        given(taskRepository.countByProjectIdAndStatus(any(), any())).willReturn(0L);
 
         ProjectResponse result = projectService.getProjectById(10L, adminDetails);
 
@@ -106,12 +111,16 @@ class ProjectServiceTest {
     }
 
     @Test
-    @DisplayName("getProjectById: other user gets ForbiddenException")
-    void getProjectById_otherUser_throwsForbidden() {
+    @DisplayName("getProjectById: any authenticated user can access any project (shared workspace)")
+    void getProjectById_anyUser_returnsProject() {
         given(projectRepository.findById(10L)).willReturn(Optional.of(project));
+        given(projectMapper.toResponse(project)).willReturn(projectResponse);
+        given(taskRepository.countByProjectId(10L)).willReturn(0L);
+        given(taskRepository.countByProjectIdAndStatus(any(), any())).willReturn(0L);
 
-        assertThatThrownBy(() -> projectService.getProjectById(10L, otherDetails))
-                .isInstanceOf(ForbiddenException.class);
+        ProjectResponse result = projectService.getProjectById(10L, otherDetails);
+
+        assertThat(result.getId()).isEqualTo(10L);
     }
 
     @Test
@@ -138,6 +147,8 @@ class ProjectServiceTest {
         given(userRepository.findById(1L)).willReturn(Optional.of(owner));
         given(projectRepository.save(any(Project.class))).willReturn(project);
         given(projectMapper.toResponse(project)).willReturn(projectResponse);
+        given(taskRepository.countByProjectId(10L)).willReturn(0L);
+        given(taskRepository.countByProjectIdAndStatus(any(), any())).willReturn(0L);
 
         ProjectResponse result = projectService.createProject(request, ownerDetails);
 
@@ -159,6 +170,8 @@ class ProjectServiceTest {
         given(projectRepository.findById(10L)).willReturn(Optional.of(project));
         given(projectRepository.save(any(Project.class))).willReturn(project);
         given(projectMapper.toResponse(project)).willReturn(projectResponse);
+        given(taskRepository.countByProjectId(10L)).willReturn(0L);
+        given(taskRepository.countByProjectIdAndStatus(any(), any())).willReturn(0L);
 
         projectService.updateProject(10L, request, ownerDetails);
 
@@ -219,20 +232,20 @@ class ProjectServiceTest {
     // ─────────────────────────────────────────
 
     @Test
-    @DisplayName("getProjects: regular user sees only own projects")
-    void getProjects_regularUser_seesOnlyOwnProjects() {
+    @DisplayName("getProjects: all users see all projects (shared workspace)")
+    void getProjects_anyUser_seesAllProjects() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Project> page = new PageImpl<>(List.of(project));
 
-        given(projectRepository.findByOwnerId(eq(1L), any(Pageable.class))).willReturn(page);
+        given(projectRepository.findAll(any(Pageable.class))).willReturn(page);
         given(projectMapper.toResponse(project)).willReturn(projectResponse);
+        given(taskRepository.countByProjectId(10L)).willReturn(0L);
+        given(taskRepository.countByProjectIdAndStatus(any(), any())).willReturn(0L);
 
         PageResponse<ProjectResponse> result = projectService.getProjects(ownerDetails, null, pageable);
 
         assertThat(result.getContent()).hasSize(1);
-        // Verify ONLY own projects query was called, NOT findAll
-        verify(projectRepository).findByOwnerId(eq(1L), any(Pageable.class));
-        verify(projectRepository, never()).findAll(any(Pageable.class));
+        verify(projectRepository).findAll(any(Pageable.class));
     }
 
     @Test
@@ -243,6 +256,8 @@ class ProjectServiceTest {
 
         given(projectRepository.findAll(any(Pageable.class))).willReturn(page);
         given(projectMapper.toResponse(project)).willReturn(projectResponse);
+        given(taskRepository.countByProjectId(10L)).willReturn(0L);
+        given(taskRepository.countByProjectIdAndStatus(any(), any())).willReturn(0L);
 
         PageResponse<ProjectResponse> result = projectService.getProjects(adminDetails, null, pageable);
 

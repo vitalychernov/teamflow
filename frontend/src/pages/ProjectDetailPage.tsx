@@ -31,7 +31,6 @@ const COLUMNS: Array<{ status: TaskStatus; label: string; headerColor: string }>
   { status: 'DONE',        label: 'Done',        headerColor: 'text-green-600' },
 ]
 
-// Initials avatar: "Michael Brown" → "MB"
 function Avatar({ name }: { name: string }) {
   const initials = name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
   return (
@@ -54,7 +53,6 @@ function UnassignedBadge() {
   )
 }
 
-// Card clone used inside DragOverlay — mirrors read mode of TaskCard
 function TaskCardPreview({ task }: { task: Task }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-2xl">
@@ -85,7 +83,6 @@ function TaskCardPreview({ task }: { task: Task }) {
   )
 }
 
-// Droppable column wrapper
 function KanbanColumn({
   col, count, children,
 }: {
@@ -110,7 +107,6 @@ function KanbanColumn({
   )
 }
 
-// Draggable task card with inline edit form
 interface TaskCardProps {
   task: Task
   users: User[] | undefined
@@ -128,7 +124,6 @@ function TaskCard({ task, users, isEditing, isSaving, onStartEdit, onCancelEdit,
   const [editPriority, setEditPriority] = useState<TaskPriority>(task.priority)
   const [editAssigneeId, setEditAssigneeId] = useState<number | ''>(task.assignee?.id ?? '')
 
-  // Sync edit fields from task when entering edit mode
   useEffect(() => {
     if (isEditing) {
       setEditTitle(task.title)
@@ -211,7 +206,6 @@ function TaskCard({ task, users, isEditing, isSaving, onStartEdit, onCancelEdit,
         /* ── Read mode ── */
         <>
           <div className="flex items-start gap-2 mb-2">
-            {/* Drag handle */}
             <div
               {...attributes}
               {...listeners}

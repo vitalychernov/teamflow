@@ -4,7 +4,6 @@ import com.teamflow.dto.request.CreateTaskRequest;
 import com.teamflow.dto.request.UpdateTaskRequest;
 import com.teamflow.dto.response.TaskResponse;
 import com.teamflow.entity.*;
-import com.teamflow.exception.ForbiddenException;
 import com.teamflow.exception.ResourceNotFoundException;
 import com.teamflow.mapper.TaskMapper;
 import com.teamflow.repository.ProjectRepository;
@@ -29,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -104,17 +102,19 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("createTask: throws ForbiddenException for non-owner")
-    void createTask_nonOwner_throwsForbidden() {
+    @DisplayName("createTask: any authenticated user can create a task (shared workspace)")
+    void createTask_anyUser_canCreate() {
         CreateTaskRequest request = new CreateTaskRequest();
-        request.setTitle("Hack task");
+        request.setTitle("New task");
 
         given(projectRepository.findById(10L)).willReturn(Optional.of(project));
+        given(taskRepository.save(any(Task.class))).willReturn(task);
+        given(taskMapper.toResponse(task)).willReturn(taskResponse);
 
-        assertThatThrownBy(() -> taskService.createTask(10L, request, strangerDetails))
-                .isInstanceOf(ForbiddenException.class);
+        TaskResponse result = taskService.createTask(10L, request, strangerDetails);
 
-        verify(taskRepository, never()).save(any());
+        assertThat(result).isNotNull();
+        verify(taskRepository).save(any(Task.class));
     }
 
     @Test
@@ -182,16 +182,17 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("updateTask: stranger (not owner, not assignee) gets ForbiddenException")
-    void updateTask_stranger_throwsForbidden() {
-        UpdateTaskRequest request = buildUpdateRequest("Hack", TaskStatus.DONE);
+    @DisplayName("updateTask: any authenticated user can update any task (shared workspace)")
+    void updateTask_anyUser_canUpdate() {
+        UpdateTaskRequest request = buildUpdateRequest("Updated", TaskStatus.DONE);
 
         given(taskRepository.findById(100L)).willReturn(Optional.of(task));
+        given(taskRepository.save(task)).willReturn(task);
+        given(taskMapper.toResponse(task)).willReturn(taskResponse);
 
-        assertThatThrownBy(() -> taskService.updateTask(100L, request, strangerDetails))
-                .isInstanceOf(ForbiddenException.class);
+        taskService.updateTask(100L, request, strangerDetails);
 
-        verify(taskRepository, never()).save(any());
+        verify(taskRepository).save(task);
     }
 
     // ─────────────────────────────────────────
@@ -209,14 +210,13 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("deleteTask: assignee cannot delete (only owner can)")
-    void deleteTask_assignee_throwsForbidden() {
+    @DisplayName("deleteTask: any authenticated user can delete any task (shared workspace)")
+    void deleteTask_anyUser_canDelete() {
         given(taskRepository.findById(100L)).willReturn(Optional.of(task));
 
-        assertThatThrownBy(() -> taskService.deleteTask(100L, assigneeDetails))
-                .isInstanceOf(ForbiddenException.class);
+        taskService.deleteTask(100L, assigneeDetails);
 
-        verify(taskRepository, never()).delete(any());
+        verify(taskRepository).delete(task);
     }
 
     // ─────────────────────────────────────────

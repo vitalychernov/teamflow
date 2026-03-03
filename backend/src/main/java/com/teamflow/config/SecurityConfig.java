@@ -100,11 +100,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * AuthenticationProvider: wires together UserDetailsService and PasswordEncoder.
-     * Spring Security uses this to verify credentials during login.
-     * DaoAuthenticationProvider = Database Authentication Object Provider.
-     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -113,35 +108,17 @@ public class SecurityConfig {
         return provider;
     }
 
-    /**
-     * AuthenticationManager: the entry point for authentication.
-     * We inject this into AuthService to authenticate login requests.
-     */
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    /**
-     * BCrypt password encoder.
-     * BCrypt automatically salts and hashes passwords.
-     * Cost factor defaults to 10 — good balance of security vs speed.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * CORS configuration.
-     * Allows the React frontend (Vercel + localhost) to call the API.
-     *
-     * Production note: replace "*" with your actual Vercel domain:
-     * e.g., "https://teamflow.vercel.app"
-     * allowedOriginPatterns("*") is safe here (unlike allowedOrigins("*"))
-     * because it works with allowCredentials(true).
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();

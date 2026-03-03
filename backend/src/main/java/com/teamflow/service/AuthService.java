@@ -15,24 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Handles user registration and login.
- *
- * Registration flow:
- *   1. Check email uniqueness
- *   2. Encode password with BCrypt
- *   3. Save user to DB
- *   4. Generate JWT
- *   5. Return token + user info
- *
- * Login flow:
- *   1. AuthenticationManager verifies credentials (delegates to
- *      DaoAuthenticationProvider → CustomUserDetailsService → BCrypt check)
- *      Throws BadCredentialsException automatically if wrong
- *   2. Load user from DB
- *   3. Generate JWT
- *   4. Return token + user info
- */
+/** Handles user registration and login. */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -69,8 +52,6 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request) {
-        // authenticate() throws BadCredentialsException if wrong credentials —
-        // Spring Security handles this automatically, no manual check needed
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail().toLowerCase(),

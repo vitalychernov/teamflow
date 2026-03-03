@@ -26,20 +26,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Controller tests for AuthController using @WebMvcTest.
- *
- * @WebMvcTest loads ONLY the web layer:
- * - Controllers, filters, security config, MockMvc
- * - Does NOT load services, repositories, JPA
- *
- * @MockBean: replaces real beans with Mockito mocks in the Spring context.
- * We must mock JwtService and CustomUserDetailsService because
- * JwtAuthenticationFilter depends on them.
- *
- * MockMvc lets us simulate HTTP requests without starting a real server.
- * We verify: status codes, JSON response structure, headers.
- */
+/** Controller tests for AuthController. */
 @WebMvcTest(AuthController.class)
 @Import(SecurityConfig.class)
 @ActiveProfiles("test")
@@ -55,7 +42,6 @@ class AuthControllerTest {
     @MockBean
     private AuthService authService;
 
-    // Required by JwtAuthenticationFilter (loaded by @WebMvcTest)
     @MockBean
     private JwtService jwtService;
     @MockBean
