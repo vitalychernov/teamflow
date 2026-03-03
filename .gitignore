@@ -17,7 +17,7 @@ replay_pid*
 # ================================
 # Spring Boot
 # ================================
-backend/src/main/resources/application-prod.yml
+# application-prod.yml is safe to commit — contains only env var references, no secrets
 backend/src/main/resources/application-local.yml
 
 # ================================

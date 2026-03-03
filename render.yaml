@@ -13,26 +13,34 @@ services:
     name: teamflow-backend
     plan: free
     runtime: docker
-    # Path to the directory containing the Dockerfile
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
 
-    # Auto-deploy on every push to main
     branch: main
     autoDeploy: true
 
-    # Health check — Render uses this to verify the service is up after deploy
     healthCheckPath: /actuator/health
 
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
 
-      # Render injects these automatically from the linked database
-      - key: SPRING_DATASOURCE_URL
+      # Render's connectionString is in postgres:// format — not compatible with JDBC.
+      # Solution: pass individual DB properties and build the JDBC URL in application-prod.yml.
+      - key: DB_HOST
         fromDatabase:
           name: teamflow-db
-          property: connectionString
+          property: host
+
+      - key: DB_PORT
+        fromDatabase:
+          name: teamflow-db
+          property: port
+
+      - key: DB_NAME
+        fromDatabase:
+          name: teamflow-db
+          property: database
 
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
@@ -44,7 +52,7 @@ services:
           name: teamflow-db
           property: password
 
-      # Set this manually in Render dashboard — never commit real secrets to git
+      # Set manually in Render dashboard → Environment after first deploy
       - key: JWT_SECRET
         sync: false
 
