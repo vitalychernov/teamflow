@@ -5,6 +5,12 @@ import { authApi } from '../features/auth/authApi'
 import { useAuth } from '../context/AuthContext'
 import type { ApiError } from '../api/types'
 
+// Demo accounts for quick access
+const DEMO_ACCOUNTS = [
+  { label: 'Alice (user)', email: 'alice@teamflow.com', password: 'demo123' },
+  { label: 'Admin', email: 'admin@teamflow.com', password: 'admin123' },
+]
+
 export function LoginPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
@@ -29,10 +35,34 @@ export function LoginPage() {
     mutation.mutate({ email, password })
   }
 
+  const fillDemo = (demoEmail: string, demoPassword: string) => {
+    setEmail(demoEmail)
+    setPassword(demoPassword)
+    setError('')
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="bg-white rounded-xl shadow-md p-6 sm:p-8 w-full max-w-md">
+    // py-8 allows the page to scroll when the mobile keyboard is open
+    <div className="min-h-screen flex flex-col justify-center bg-gray-50 px-4 py-8">
+      <div className="bg-white rounded-xl shadow-md p-6 sm:p-8 w-full max-w-md mx-auto">
         <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">Sign in to TeamFlow</h1>
+
+        {/* Demo credentials block */}
+        <div className="mb-5 p-3 bg-blue-50 border border-blue-100 rounded-lg">
+          <p className="text-xs font-semibold text-blue-700 mb-2">Try a demo account:</p>
+          <div className="flex flex-wrap gap-2">
+            {DEMO_ACCOUNTS.map((acc) => (
+              <button
+                key={acc.email}
+                type="button"
+                onClick={() => fillDemo(acc.email, acc.password)}
+                className="text-xs px-3 py-1 bg-white border border-blue-200 text-blue-600 rounded-full hover:bg-blue-100 transition-colors"
+              >
+                {acc.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
@@ -66,7 +96,7 @@ export function LoginPage() {
           <button
             type="submit"
             disabled={mutation.isPending}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-2 rounded-lg transition-colors"
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-2.5 rounded-lg transition-colors"
           >
             {mutation.isPending ? 'Signing in…' : 'Sign in'}
           </button>
