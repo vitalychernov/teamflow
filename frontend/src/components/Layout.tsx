@@ -20,7 +20,7 @@ export function Layout() {
         <div className="flex items-center gap-3 sm:gap-4 min-w-0">
           {isAdmin && (
             <Link to="/admin" className="text-sm text-gray-600 hover:text-blue-600 shrink-0">
-              Admin
+              Users
             </Link>
           )}
           <span className="text-sm text-gray-500 truncate max-w-[120px] sm:max-w-none">
