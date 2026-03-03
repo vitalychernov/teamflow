@@ -95,7 +95,7 @@ class TaskRepositoryTest {
     @DisplayName("filter: no filters → returns all tasks for project")
     void findWithFilters_noFilters_returnsAll() {
         Page<Task> result = taskRepository.findByProjectIdWithFilters(
-                project.getId(), null, null, PageRequest.of(0, 10));
+                project.getId(), null, null, null, PageRequest.of(0, 10));
 
         assertThat(result.getTotalElements()).isEqualTo(5);
     }
@@ -104,7 +104,7 @@ class TaskRepositoryTest {
     @DisplayName("filter: status=TODO → returns only TODO tasks")
     void findWithFilters_statusFilter_returnsTodoOnly() {
         Page<Task> result = taskRepository.findByProjectIdWithFilters(
-                project.getId(), TaskStatus.TODO, null, PageRequest.of(0, 10));
+                project.getId(), TaskStatus.TODO, null, null, PageRequest.of(0, 10));
 
         assertThat(result.getContent()).hasSize(2);
         assertThat(result.getContent())
@@ -116,7 +116,7 @@ class TaskRepositoryTest {
     @DisplayName("filter: priority=HIGH → returns only HIGH priority tasks")
     void findWithFilters_priorityFilter_returnsHighOnly() {
         Page<Task> result = taskRepository.findByProjectIdWithFilters(
-                project.getId(), null, TaskPriority.HIGH, PageRequest.of(0, 10));
+                project.getId(), null, TaskPriority.HIGH, null, PageRequest.of(0, 10));
 
         assertThat(result.getContent()).hasSize(2);
         assertThat(result.getContent())
@@ -128,7 +128,7 @@ class TaskRepositoryTest {
     @DisplayName("filter: status=TODO AND priority=HIGH → returns exactly 1 task")
     void findWithFilters_bothFilters_returnsExactMatch() {
         Page<Task> result = taskRepository.findByProjectIdWithFilters(
-                project.getId(), TaskStatus.TODO, TaskPriority.HIGH, PageRequest.of(0, 10));
+                project.getId(), TaskStatus.TODO, TaskPriority.HIGH, null, PageRequest.of(0, 10));
 
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getTitle()).isEqualTo("Task 1 - TODO HIGH");
@@ -138,7 +138,7 @@ class TaskRepositoryTest {
     @DisplayName("filter: status=DONE → returns 2 done tasks")
     void findWithFilters_statusDone_returnsTwoDone() {
         Page<Task> result = taskRepository.findByProjectIdWithFilters(
-                project.getId(), TaskStatus.DONE, null, PageRequest.of(0, 10));
+                project.getId(), TaskStatus.DONE, null, null, PageRequest.of(0, 10));
 
         assertThat(result.getContent()).hasSize(2);
     }
@@ -148,7 +148,7 @@ class TaskRepositoryTest {
     void findWithFilters_noMatch_returnsEmpty() {
         // No task is IN_PROGRESS + LOW
         Page<Task> result = taskRepository.findByProjectIdWithFilters(
-                project.getId(), TaskStatus.IN_PROGRESS, TaskPriority.LOW, PageRequest.of(0, 10));
+                project.getId(), TaskStatus.IN_PROGRESS, TaskPriority.LOW, null, PageRequest.of(0, 10));
 
         assertThat(result.isEmpty()).isTrue();
     }
@@ -197,7 +197,7 @@ class TaskRepositoryTest {
     @DisplayName("existsByIdAndProjectId: returns true for task belonging to project")
     void existsByIdAndProjectId_correctProject_returnsTrue() {
         Task task = taskRepository.findByProjectIdWithFilters(
-                project.getId(), null, null, PageRequest.of(0, 1))
+                project.getId(), null, null, null, PageRequest.of(0, 1))
                 .getContent().get(0);
 
         boolean exists = taskRepository.existsByIdAndProjectId(
@@ -210,7 +210,7 @@ class TaskRepositoryTest {
     @DisplayName("existsByIdAndProjectId: returns false for wrong project")
     void existsByIdAndProjectId_wrongProject_returnsFalse() {
         Task task = taskRepository.findByProjectIdWithFilters(
-                project.getId(), null, null, PageRequest.of(0, 1))
+                project.getId(), null, null, null, PageRequest.of(0, 1))
                 .getContent().get(0);
 
         boolean exists = taskRepository.existsByIdAndProjectId(

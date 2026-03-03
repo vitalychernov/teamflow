@@ -9,7 +9,6 @@ import com.teamflow.entity.Task;
 import com.teamflow.entity.TaskPriority;
 import com.teamflow.entity.TaskStatus;
 import com.teamflow.entity.User;
-import com.teamflow.exception.ForbiddenException;
 import com.teamflow.exception.ResourceNotFoundException;
 import com.teamflow.mapper.TaskMapper;
 import com.teamflow.repository.ProjectRepository;
@@ -44,13 +43,14 @@ public class TaskService {
     public PageResponse<TaskResponse> getTasks(Long projectId,
                                                TaskStatus status,
                                                TaskPriority priority,
+                                               Long assigneeId,
                                                Pageable pageable,
                                                CustomUserDetails currentUser) {
         Project project = findProjectOrThrow(projectId);
         validateProjectAccess(project, currentUser);
 
         Page<Task> tasks = taskRepository.findByProjectIdWithFilters(
-                projectId, status, priority, pageable);
+                projectId, status, priority, assigneeId, pageable);
 
         return PageResponse.from(tasks.map(taskMapper::toResponse));
     }
@@ -145,25 +145,14 @@ public class TaskService {
     }
 
     private void validateProjectAccess(Project project, CustomUserDetails currentUser) {
-        boolean isOwner = project.getOwner().getId().equals(currentUser.getId());
-        if (!isOwner && !currentUser.isAdmin()) {
-            throw new ForbiddenException("You don't have access to this project");
-        }
+        // Shared workspace: all authenticated users can read and create tasks in any project
     }
 
     private void validateProjectWriteAccess(Project project, CustomUserDetails currentUser) {
-        boolean isOwner = project.getOwner().getId().equals(currentUser.getId());
-        if (!isOwner && !currentUser.isAdmin()) {
-            throw new ForbiddenException("You don't have permission to modify tasks in this project");
-        }
+        // Shared workspace: all authenticated users can delete tasks
     }
 
     private void validateTaskWriteAccess(Task task, CustomUserDetails currentUser) {
-        boolean isProjectOwner = task.getProject().getOwner().getId().equals(currentUser.getId());
-        boolean isAssignee = task.getAssignee() != null
-                && task.getAssignee().getId().equals(currentUser.getId());
-        if (!isProjectOwner && !isAssignee && !currentUser.isAdmin()) {
-            throw new ForbiddenException("You don't have permission to modify this task");
-        }
+        // Shared workspace: all authenticated users can update any task
     }
 }

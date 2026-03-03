@@ -53,15 +53,11 @@ public class ProjectService {
         Page<Project> projects;
 
         if (StringUtils.hasText(keyword)) {
-            // Search by name — always scoped to current user (even ADMIN sees own projects here)
-            projects = projectRepository.searchByOwnerAndName(
-                    currentUser.getId(), keyword, pageable);
-        } else if (currentUser.isAdmin()) {
-            // ADMIN with no keyword — see all projects in the system
-            projects = projectRepository.findAll(pageable);
+            // Shared workspace: search by name across all projects
+            projects = projectRepository.searchByName(keyword, pageable);
         } else {
-            // Regular user — see only their own projects
-            projects = projectRepository.findByOwnerId(currentUser.getId(), pageable);
+            // Shared workspace: all users see all projects
+            projects = projectRepository.findAll(pageable);
         }
 
         return PageResponse.from(projects.map(projectMapper::toResponse));
@@ -121,10 +117,7 @@ public class ProjectService {
     }
 
     private void validateReadAccess(Project project, CustomUserDetails currentUser) {
-        boolean isOwner = project.getOwner().getId().equals(currentUser.getId());
-        if (!isOwner && !currentUser.isAdmin()) {
-            throw new ForbiddenException("You don't have access to this project");
-        }
+        // Shared workspace: all authenticated users can read any project
     }
 
     private void validateWriteAccess(Project project, CustomUserDetails currentUser) {

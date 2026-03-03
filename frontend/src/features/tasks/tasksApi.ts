@@ -4,7 +4,7 @@ import type { CreateTaskRequest, PageResponse, Task, TaskPriority, TaskStatus, U
 export const tasksApi = {
   getByProject: async (
     projectId: number,
-    params?: { status?: TaskStatus; priority?: TaskPriority; page?: number; size?: number }
+    params?: { status?: TaskStatus; priority?: TaskPriority; assigneeId?: number; page?: number; size?: number }
   ): Promise<PageResponse<Task>> => {
     const res = await api.get<PageResponse<Task>>(`/api/projects/${projectId}/tasks`, {
       params: { page: 0, size: 50, ...params },

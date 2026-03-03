@@ -55,6 +55,18 @@ public class DataSeeder implements ApplicationRunner {
                 .password(passwordEncoder.encode("demo123"))
                 .build());
 
+        User sarah = userRepository.save(User.builder()
+                .name("Sarah Wilson")
+                .email("sarah.wilson@teamflow.com")
+                .password(passwordEncoder.encode("demo123"))
+                .build());
+
+        User michael = userRepository.save(User.builder()
+                .name("Michael Brown")
+                .email("michael.brown@teamflow.com")
+                .password(passwordEncoder.encode("demo123"))
+                .build());
+
         // ── Project 1: Website Redesign ────────────────────────────────────────
         Project website = projectRepository.save(Project.builder()
                 .name("Website Redesign")
@@ -68,7 +80,7 @@ public class DataSeeder implements ApplicationRunner {
                 .status(TaskStatus.IN_PROGRESS)
                 .priority(TaskPriority.HIGH)
                 .project(website)
-                .assignee(john)
+                .assignee(sarah)
                 .build());
 
         taskRepository.save(Task.builder()
@@ -86,7 +98,7 @@ public class DataSeeder implements ApplicationRunner {
                 .status(TaskStatus.TODO)
                 .priority(TaskPriority.MEDIUM)
                 .project(website)
-                .assignee(john)
+                .assignee(michael)
                 .build());
 
         taskRepository.save(Task.builder()
@@ -103,6 +115,7 @@ public class DataSeeder implements ApplicationRunner {
                 .status(TaskStatus.TODO)
                 .priority(TaskPriority.MEDIUM)
                 .project(website)
+                .assignee(sarah)
                 .build());
 
         // ── Project 2: Mobile App v2 ───────────────────────────────────────────
@@ -127,7 +140,7 @@ public class DataSeeder implements ApplicationRunner {
                 .status(TaskStatus.TODO)
                 .priority(TaskPriority.HIGH)
                 .project(mobile)
-                .assignee(john)
+                .assignee(michael)
                 .build());
 
         taskRepository.save(Task.builder()
@@ -136,21 +149,23 @@ public class DataSeeder implements ApplicationRunner {
                 .status(TaskStatus.DONE)
                 .priority(TaskPriority.HIGH)
                 .project(mobile)
+                .assignee(sarah)
                 .build());
 
         taskRepository.save(Task.builder()
                 .title("Write integration tests for sync logic")
                 .description("Cover conflict resolution when offline edits clash with server state.")
-                .status(TaskStatus.TODO)
+                .status(TaskStatus.IN_PROGRESS)
                 .priority(TaskPriority.MEDIUM)
                 .project(mobile)
+                .assignee(michael)
                 .build());
 
         // ── Project 3: Q1 Marketing Campaign ──────────────────────────────────
         Project marketing = projectRepository.save(Project.builder()
                 .name("Q1 Marketing Campaign")
                 .description("Launch campaign across email, social media, and paid ads targeting enterprise customers.")
-                .owner(john)
+                .owner(sarah)
                 .build());
 
         taskRepository.save(Task.builder()
@@ -168,7 +183,7 @@ public class DataSeeder implements ApplicationRunner {
                 .status(TaskStatus.IN_PROGRESS)
                 .priority(TaskPriority.MEDIUM)
                 .project(marketing)
-                .assignee(john)
+                .assignee(sarah)
                 .build());
 
         taskRepository.save(Task.builder()
@@ -177,6 +192,7 @@ public class DataSeeder implements ApplicationRunner {
                 .status(TaskStatus.TODO)
                 .priority(TaskPriority.MEDIUM)
                 .project(marketing)
+                .assignee(michael)
                 .build());
 
         taskRepository.save(Task.builder()
@@ -185,11 +201,12 @@ public class DataSeeder implements ApplicationRunner {
                 .status(TaskStatus.TODO)
                 .priority(TaskPriority.LOW)
                 .project(marketing)
-                .assignee(john)
                 .build());
 
-        log.info("DataSeeder: done. Created 2 users, 3 projects, 13 tasks.");
-        log.info("  admin@teamflow.com      / admin123  (ADMIN)");
-        log.info("  john.smith@teamflow.com / demo123   (USER)");
+        log.info("DataSeeder: done. Created 4 users, 3 projects, 13 tasks.");
+        log.info("  admin@teamflow.com           / admin123  (ADMIN)");
+        log.info("  john.smith@teamflow.com      / demo123   (USER)");
+        log.info("  sarah.wilson@teamflow.com    / demo123   (USER)");
+        log.info("  michael.brown@teamflow.com   / demo123   (USER)");
     }
 }

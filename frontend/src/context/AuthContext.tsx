@@ -2,6 +2,7 @@ import { createContext, useContext, useState, ReactNode } from 'react'
 import type { AuthResponse } from '../api/types'
 
 interface AuthUser {
+  id: number
   email: string
   name: string
   role: string
@@ -33,6 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = (response: AuthResponse) => {
     const authUser: AuthUser = {
+      id: response.id,
       email: response.email,
       name: response.name,
       role: response.role,

@@ -6,12 +6,15 @@ import com.teamflow.mapper.UserMapper;
 import com.teamflow.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Service for user management operations.
- * Currently used by AdminController only.
+ * Used by AdminController (paginated) and UserController (full list for dropdowns).
  */
 @Service
 @RequiredArgsConstructor
@@ -25,5 +28,14 @@ public class UserService {
         return PageResponse.from(
                 userRepository.findAll(pageable).map(userMapper::toResponse)
         );
+    }
+
+    /** Returns all users sorted by name — used for assignee dropdown. */
+    @Transactional(readOnly = true)
+    public List<UserResponse> getAllUsersList() {
+        return userRepository.findAll(Sort.by("name"))
+                .stream()
+                .map(userMapper::toResponse)
+                .toList();
     }
 }

@@ -39,7 +39,7 @@ export function ProjectsPage() {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">My Projects</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">All Projects</h1>
         <button
           onClick={() => setShowCreate(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg shrink-0"

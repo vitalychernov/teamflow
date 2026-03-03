@@ -230,10 +230,10 @@ class TaskServiceTest {
 
         given(projectRepository.findById(10L)).willReturn(Optional.of(project));
         given(taskRepository.findByProjectIdWithFilters(
-                any(), any(), any(), any())).willReturn(taskPage);
+                any(), any(), any(), any(), any())).willReturn(taskPage);
         given(taskMapper.toResponse(task)).willReturn(taskResponse);
 
-        var result = taskService.getTasks(10L, null, null,
+        var result = taskService.getTasks(10L, null, null, null,
                 PageRequest.of(0, 10), ownerDetails);
 
         assertThat(result.getContent()).hasSize(1);

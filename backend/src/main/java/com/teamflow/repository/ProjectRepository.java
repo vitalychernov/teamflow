@@ -51,4 +51,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> searchByOwnerAndName(@Param("ownerId") Long ownerId,
                                        @Param("keyword") String keyword,
                                        Pageable pageable);
+
+    /**
+     * Search projects by name across all owners (shared workspace).
+     */
+    @Query("SELECT p FROM Project p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    Page<Project> searchByName(@Param("keyword") String keyword, Pageable pageable);
 }

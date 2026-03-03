@@ -44,10 +44,12 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
      */
     @Query("SELECT t FROM Task t WHERE t.project.id = :projectId " +
            "AND (:status IS NULL OR t.status = :status) " +
-           "AND (:priority IS NULL OR t.priority = :priority)")
+           "AND (:priority IS NULL OR t.priority = :priority) " +
+           "AND (:assigneeId IS NULL OR t.assignee.id = :assigneeId)")
     Page<Task> findByProjectIdWithFilters(@Param("projectId") Long projectId,
                                           @Param("status") TaskStatus status,
                                           @Param("priority") TaskPriority priority,
+                                          @Param("assigneeId") Long assigneeId,
                                           Pageable pageable);
 
     /**

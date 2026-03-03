@@ -57,6 +57,7 @@ public class TaskController {
             @RequestParam(defaultValue = "desc") String direction,
             @RequestParam(required = false) TaskStatus status,       // e.g. ?status=IN_PROGRESS
             @RequestParam(required = false) TaskPriority priority,   // e.g. ?priority=HIGH
+            @RequestParam(required = false) Long assigneeId,         // e.g. ?assigneeId=3
             @AuthenticationPrincipal CustomUserDetails currentUser) {
 
         Sort sort = direction.equalsIgnoreCase("asc")
@@ -65,7 +66,7 @@ public class TaskController {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         return ResponseEntity.ok(
-                taskService.getTasks(projectId, status, priority, pageable, currentUser));
+                taskService.getTasks(projectId, status, priority, assigneeId, pageable, currentUser));
     }
 
     @PostMapping("/api/projects/{projectId}/tasks")
