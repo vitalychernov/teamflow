@@ -48,40 +48,19 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
-
-      - name: Build JAR
-        working-directory: backend
-        run: mvn clean package -DskipTests -q
-
-      - name: Copy JAR to VPS
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 2222
-          source: "backend/target/teamflow-backend-0.0.1-SNAPSHOT.jar"
-          target: "/home/vchernov/teamflow/backend/target/"
-          strip_components: 2
-
-      - name: Restart service
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 2222
-          command_timeout: 2m
+          command_timeout: 5m
           script: |
+            cd ~/teamflow
+            git pull origin main
+            cd backend
+            mvn clean package -DskipTests -q
             sudo systemctl restart teamflow
             sleep 5
             sudo systemctl status teamflow --no-pager
