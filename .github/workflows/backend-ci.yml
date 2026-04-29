@@ -36,8 +36,8 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 2222
           source: "backend/target/teamflow-backend-0.0.1-SNAPSHOT.jar"
-          target: "/home/vchernov/teamflow/backend/target/teamflow-backend-0.0.1-SNAPSHOT.jar"
-          strip_components: 3
+          target: "/home/vchernov/teamflow/"
+          strip_components: 0
 
       - name: Restart service
         uses: appleboy/ssh-action@v1.0.3
