@@ -18,11 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Authentication endpoints — public (no JWT required).
  *
- * Controller responsibilities (thin layer):
- * 1. Parse and validate the request body (@Valid)
- * 2. Call the service
- * 3. Return the appropriate HTTP status + body
- *
  * NO business logic here. All logic lives in AuthService.
  *
  * @Valid triggers Jakarta Validation on the request DTO.

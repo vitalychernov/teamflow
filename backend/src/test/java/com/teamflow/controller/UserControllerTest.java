@@ -40,10 +40,6 @@ class UserControllerTest {
             .id(1L).name("Alice").email("alice@example.com")
             .password("hashed").role(Role.USER).build();
 
-    // ─────────────────────────────────────────
-    // GET /api/users
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("GET /users: 200 with list of users")
     void getUsers_authenticated_returns200() throws Exception {

@@ -93,11 +93,6 @@ public class ProjectService {
         projectRepository.delete(project);
     }
 
-    // ─────────────────────────────────────────
-    // Private helpers
-    // ─────────────────────────────────────────
-
-    /** Appends task completion stats to a ProjectResponse. */
     private ProjectResponse enrichWithStats(ProjectResponse response) {
         int total = (int) taskRepository.countByProjectId(response.getId());
         int done  = (int) taskRepository.countByProjectIdAndStatus(response.getId(), TaskStatus.DONE);

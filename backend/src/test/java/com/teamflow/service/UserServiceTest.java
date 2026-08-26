@@ -26,7 +26,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-/** Unit tests for UserService. */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("UserService Tests")
 class UserServiceTest {
@@ -48,10 +47,6 @@ class UserServiceTest {
 
     private final UserResponse bobResponse = UserResponse.builder()
             .id(2L).name("Bob").email("bob@example.com").role("USER").build();
-
-    // ─────────────────────────────────────────
-    // getAllUsers() — paginated
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("getAllUsers: returns PageResponse with mapped users")
@@ -82,10 +77,6 @@ class UserServiceTest {
 
         verify(userRepository).findAll(pageable);
     }
-
-    // ─────────────────────────────────────────
-    // getAllUsersList() — dropdown
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("getAllUsersList: returns list of non-admin users")

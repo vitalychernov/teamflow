@@ -9,24 +9,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Repository for User entity.
- *
- * JpaRepository<User, Long> provides out of the box:
- * - save(), findById(), findAll(), deleteById(), count(), existsById(), etc.
- * Spring Data generates the SQL implementation at startup — no boilerplate needed.
- *
- * Method naming convention:
- * findBy{FieldName} → SELECT * FROM users WHERE field_name = ?
- * existsBy{FieldName} → SELECT COUNT(*) > 0 FROM users WHERE field_name = ?
- */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    /**
-     * Used during login: look up user by email to verify credentials.
-     * Returns Optional to force callers to handle the "not found" case explicitly.
-     */
+    /** Used during login: look up user by email to verify credentials. */
     Optional<User> findByEmail(String email);
 
     /**
@@ -35,6 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     boolean existsByEmail(String email);
 
-    /** Returns all users with a given role, sorted. Used for assignee dropdown (excludes ADMIN). */
+    /** Used for assignee dropdown (excludes ADMIN). */
     List<User> findByRoleNot(Role role, Sort sort);
 }

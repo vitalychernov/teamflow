@@ -20,7 +20,6 @@ public class UpdateTaskRequest {
     @Size(max = 5000, message = "Description must not exceed 5000 characters")
     private String description;
 
-    // Status CAN be updated (move task through workflow)
     private TaskStatus status;
 
     private TaskPriority priority;

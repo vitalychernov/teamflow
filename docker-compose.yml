@@ -1,10 +1,5 @@
 services:
 
-  # ==========================================
-  # PostgreSQL — local development database.
-  # Data is persisted in a Docker volume,
-  # so it survives container restarts.
-  # ==========================================
   postgres:
     image: postgres:16-alpine
     container_name: teamflow-postgres
@@ -13,11 +8,9 @@ services:
       POSTGRES_USER: teamflow
       POSTGRES_PASSWORD: teamflow
     ports:
-      # host:container — access from localhost:5432
       - "5432:5432"
     volumes:
-      # Named volume: data persists between 'docker-compose down' runs
-      # Use 'docker-compose down -v' to also delete data
+      # 'docker-compose down' keeps this volume; add -v to also delete the data
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U teamflow -d teamflow_dev"]
@@ -25,10 +18,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # ==========================================
-  # Backend — Spring Boot app (built from source).
-  # Starts only after postgres is healthy.
-  # ==========================================
   backend:
     build:
       context: ./backend

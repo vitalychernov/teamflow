@@ -11,24 +11,20 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Protected routes — wrapped in Layout (navbar + content area) */}
         <Route element={<PrivateRoute />}>
           <Route element={<Layout />}>
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:id" element={<ProjectDetailPage />} />
 
-            {/* Admin-only */}
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminPage />} />
             </Route>
           </Route>
         </Route>
 
-        {/* Fallback: redirect root → /projects */}
         <Route path="*" element={<Navigate to="/projects" replace />} />
       </Routes>
     </BrowserRouter>

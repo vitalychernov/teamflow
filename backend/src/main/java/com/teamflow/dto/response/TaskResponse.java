@@ -9,10 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-/**
- * Full task response — used for all task endpoints.
- * Contains nested assignee info (nullable).
- */
 @Data
 @Builder
 @NoArgsConstructor

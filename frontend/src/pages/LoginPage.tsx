@@ -45,7 +45,6 @@ export function LoginPage() {
       <div className="bg-white rounded-xl shadow-md p-6 sm:p-8 w-full max-w-md mx-auto">
         <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">Sign in to TeamFlow</h1>
 
-        {/* Demo credentials */}
         <div className="mb-5 p-3 bg-blue-50 border border-blue-100 rounded-lg">
           <p className="text-xs font-semibold text-blue-700 mb-2 text-center">Try a demo account:</p>
           <div className="flex flex-wrap gap-2 justify-center">

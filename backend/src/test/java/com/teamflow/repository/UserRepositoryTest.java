@@ -15,21 +15,9 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for UserRepository.
- *
- * @DataJpaTest:
- * - Loads only JPA beans (fast — no web layer, no security, no services)
- * - Replaces PostgreSQL with H2 in-memory database automatically
- * - Each @Test runs in a transaction that ROLLS BACK after the test
- *   → test data is never persisted between tests
- *
  * We test only OUR custom methods (findByEmail, existsByEmail).
  * We do NOT test save(), findById() etc. — those come from Spring Data
  * and are already tested by the framework.
- *
- * AssertJ (assertThat) is preferred over JUnit assertEquals:
- * - More readable: assertThat(result).isPresent().hasValueSatisfying(...)
- * - Better error messages on failure
  */
 @DataJpaTest
 @ActiveProfiles("test")
@@ -42,7 +30,6 @@ class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    // Test data — created fresh before each test
     private User testUser;
 
     @BeforeEach
@@ -59,16 +46,11 @@ class UserRepositoryTest {
                 .build());
     }
 
-    // ─────────────────────────────────────────
-    // findByEmail tests
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("findByEmail: should return user when email exists")
     void findByEmail_whenEmailExists_returnsUser() {
         Optional<User> result = userRepository.findByEmail("john@example.com");
 
-        // isPresent() checks Optional is not empty
         assertThat(result).isPresent();
         assertThat(result.get().getEmail()).isEqualTo("john@example.com");
         assertThat(result.get().getName()).isEqualTo("John Doe");
@@ -79,7 +61,6 @@ class UserRepositoryTest {
     void findByEmail_whenEmailNotFound_returnsEmpty() {
         Optional<User> result = userRepository.findByEmail("nonexistent@example.com");
 
-        // isEmpty() checks Optional IS empty
         assertThat(result).isEmpty();
     }
 
@@ -93,10 +74,6 @@ class UserRepositoryTest {
 
         assertThat(result).isEmpty();
     }
-
-    // ─────────────────────────────────────────
-    // existsByEmail tests
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("existsByEmail: should return true when email exists")

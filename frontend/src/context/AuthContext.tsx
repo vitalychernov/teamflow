@@ -19,7 +19,6 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-// Restore user from localStorage on page refresh
 function loadUser(): AuthUser | null {
   try {
     const raw = localStorage.getItem('user')
@@ -60,7 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 }
 
-// Custom hook — throws if used outside AuthProvider
 export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext)
   if (!ctx) throw new Error('useAuth must be used within AuthProvider')

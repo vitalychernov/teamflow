@@ -1,9 +1,7 @@
-# ==========================================
 # Base configuration — shared across ALL environments.
 # Environment-specific values are in application-dev.yml
 # and application-prod.yml.
 # Active profile is set via SPRING_PROFILES_ACTIVE env var.
-# ==========================================
 
 spring:
   application:
@@ -14,7 +12,6 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
 
-  # JPA shared config
   jpa:
     # Show SQL in logs (overridden per profile)
     show-sql: false
@@ -25,9 +22,6 @@ spring:
         # e.g., createdAt -> created_at
         physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
 
-# ==========================================
-# App-level custom properties
-# ==========================================
 app:
   jwt:
     # Secret key — MUST be overridden in prod via environment variable.
@@ -36,9 +30,6 @@ app:
     # Token expiration in milliseconds (24 hours)
     expiration: ${JWT_EXPIRATION:86400000}
 
-# ==========================================
-# Server
-# ==========================================
 server:
   port: ${PORT:8080}
   # Return structured error responses (not HTML)
@@ -46,9 +37,7 @@ server:
     include-message: always
     include-binding-errors: always
 
-# ==========================================
 # Actuator — health check endpoint for Render
-# ==========================================
 management:
   endpoints:
     web:
@@ -57,16 +46,11 @@ management:
         include: health
   endpoint:
     health:
-      # "always" so Render gets a 200 response even when DB is starting up
       show-details: never
 
-# ==========================================
-# Swagger / OpenAPI
-# ==========================================
 springdoc:
   api-docs:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
-    # Expand all operations in Swagger UI by default
     operations-sorter: method

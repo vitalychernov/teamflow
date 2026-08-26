@@ -14,12 +14,10 @@ export function ConfirmDialog({
   onCancel,
 }: Props) {
   return (
-    // Backdrop
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
       onClick={onCancel}
     >
-      {/* Panel */}
       <div
         className="bg-white rounded-xl shadow-xl w-full max-w-sm p-6"
         onClick={(e) => e.stopPropagation()}

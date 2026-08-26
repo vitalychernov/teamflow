@@ -4,7 +4,6 @@ import com.teamflow.dto.response.UserResponse;
 import com.teamflow.entity.User;
 import org.springframework.stereotype.Component;
 
-/** Maps User entity to UserResponse DTO. */
 @Component
 public class UserMapper {
 

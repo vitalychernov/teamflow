@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/projects")
 @RequiredArgsConstructor
 @Tag(name = "Projects", description = "Project management endpoints")
-@SecurityRequirement(name = "bearerAuth")  // tells Swagger this needs JWT
+@SecurityRequirement(name = "bearerAuth")
 public class ProjectController {
 
     private final ProjectService projectService;
@@ -92,6 +92,6 @@ public class ProjectController {
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
         projectService.deleteProject(id, currentUser);
-        return ResponseEntity.noContent().build();  // 204 No Content
+        return ResponseEntity.noContent().build();
     }
 }

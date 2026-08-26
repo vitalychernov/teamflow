@@ -80,10 +80,6 @@ class TaskServiceTest {
         strangerDetails = new CustomUserDetails(stranger);
     }
 
-    // ─────────────────────────────────────────
-    // createTask tests
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("createTask: project owner can create a task")
     void createTask_projectOwner_createsSuccessfully() {
@@ -122,7 +118,7 @@ class TaskServiceTest {
     void createTask_withAssigneeId_resolvesAssignee() {
         CreateTaskRequest request = new CreateTaskRequest();
         request.setTitle("Assigned Task");
-        request.setAssigneeId(2L);  // assign to 'assignee' user
+        request.setAssigneeId(2L);
 
         given(projectRepository.findById(10L)).willReturn(Optional.of(project));
         given(userRepository.findById(2L)).willReturn(Optional.of(assignee));
@@ -148,10 +144,6 @@ class TaskServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("999");
     }
-
-    // ─────────────────────────────────────────
-    // updateTask authorization tests
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("updateTask: project owner can update any task")
@@ -195,10 +187,6 @@ class TaskServiceTest {
         verify(taskRepository).save(task);
     }
 
-    // ─────────────────────────────────────────
-    // deleteTask tests
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("deleteTask: project owner can delete task")
     void deleteTask_projectOwner_deletesSuccessfully() {
@@ -219,10 +207,6 @@ class TaskServiceTest {
         verify(taskRepository).delete(task);
     }
 
-    // ─────────────────────────────────────────
-    // getTasks tests
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("getTasks: returns filtered task page for project owner")
     void getTasks_projectOwner_returnsPage() {
@@ -239,10 +223,6 @@ class TaskServiceTest {
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getTotalElements()).isEqualTo(1);
     }
-
-    // ─────────────────────────────────────────
-    // Helper
-    // ─────────────────────────────────────────
 
     private UpdateTaskRequest buildUpdateRequest(String title, TaskStatus status) {
         UpdateTaskRequest req = new UpdateTaskRequest();

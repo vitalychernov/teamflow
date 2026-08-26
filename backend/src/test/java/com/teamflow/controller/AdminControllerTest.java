@@ -46,10 +46,6 @@ class AdminControllerTest {
             .id(2L).name("Alice").email("alice@example.com")
             .password("hashed").role(Role.USER).build();
 
-    // ─────────────────────────────────────────
-    // GET /api/admin/users
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("GET /admin/users: 200 when authenticated as ADMIN")
     void getUsers_asAdmin_returns200() throws Exception {

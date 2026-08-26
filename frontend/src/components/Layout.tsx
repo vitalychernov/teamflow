@@ -12,7 +12,6 @@ export function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
       <nav className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between shadow-sm">
         <Link to="/projects" className="text-xl font-bold text-blue-600 shrink-0">
           TeamFlow
@@ -35,7 +34,6 @@ export function Layout() {
         </div>
       </nav>
 
-      {/* Page content */}
       <main className="flex-1 px-4 py-5 sm:p-6 max-w-5xl mx-auto w-full">
         <Outlet />
       </main>

@@ -33,15 +33,6 @@ public class PageResponse<T> {
     private int totalPages;
     private boolean last;
 
-    /**
-     * Static factory method: converts Spring's Page<T> into our PageResponse<T>.
-     * Called in mappers or service layer.
-     *
-     * Example usage:
-     *   Page<Project> projects = projectRepository.findByOwnerId(id, pageable);
-     *   Page<ProjectResponse> dtos = projects.map(projectMapper::toResponse);
-     *   return PageResponse.from(dtos);
-     */
     public static <T> PageResponse<T> from(Page<T> page) {
         return PageResponse.<T>builder()
                 .content(page.getContent())

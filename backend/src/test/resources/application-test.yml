@@ -1,7 +1,5 @@
-# ==========================================
 # TEST profile — used during 'mvn test'.
 # H2 in-memory DB: no PostgreSQL needed in CI.
-# ==========================================
 
 spring:
   datasource:

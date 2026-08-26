@@ -46,7 +46,6 @@ class ProjectRepositoryTest {
                 .role(Role.USER)
                 .build());
 
-        // Create 3 projects for 'owner' and 1 for 'otherUser'
         entityManager.persistAndFlush(Project.builder()
                 .name("Alpha Project")
                 .description("First project")
@@ -72,19 +71,13 @@ class ProjectRepositoryTest {
                 .build());
     }
 
-    // ─────────────────────────────────────────
-    // findByOwnerId tests
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("findByOwnerId: should return only owner's projects")
     void findByOwnerId_returnsOnlyOwnerProjects() {
-        // PageRequest.of(page, size) → page 0, 10 items per page
         Page<Project> result = projectRepository.findByOwnerId(
                 owner.getId(), PageRequest.of(0, 10));
 
         assertThat(result.getContent()).hasSize(3);
-        // Verify all returned projects belong to the owner
         assertThat(result.getContent())
                 .extracting(p -> p.getOwner().getId())
                 .containsOnly(owner.getId());
@@ -103,7 +96,6 @@ class ProjectRepositoryTest {
         Page<Project> result = projectRepository.findByOwnerId(
                 newUser.getId(), PageRequest.of(0, 10));
 
-        // isEmpty() on Page checks if content list is empty
         assertThat(result.isEmpty()).isTrue();
         assertThat(result.getTotalElements()).isZero();
     }
@@ -111,7 +103,6 @@ class ProjectRepositoryTest {
     @Test
     @DisplayName("findByOwnerId: should respect pagination size")
     void findByOwnerId_respectsPaginationSize() {
-        // Request page 0, size 2 → should return 2 out of 3 projects
         Page<Project> page1 = projectRepository.findByOwnerId(
                 owner.getId(), PageRequest.of(0, 2));
 
@@ -124,7 +115,6 @@ class ProjectRepositoryTest {
     @Test
     @DisplayName("findByOwnerId: should support sorting")
     void findByOwnerId_supportsSorting() {
-        // Sort by name ASC
         Page<Project> result = projectRepository.findByOwnerId(
                 owner.getId(),
                 PageRequest.of(0, 10, Sort.by("name").ascending()));
@@ -133,10 +123,6 @@ class ProjectRepositoryTest {
                 .extracting(Project::getName)
                 .containsExactly("Alpha Project", "Beta Project", "Gamma Project");
     }
-
-    // ─────────────────────────────────────────
-    // existsByIdAndOwnerId tests
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("existsByIdAndOwnerId: should return true for actual owner")
@@ -156,21 +142,15 @@ class ProjectRepositoryTest {
         Project ownerProject = projectRepository.findByOwnerId(
                 owner.getId(), PageRequest.of(0, 1)).getContent().get(0);
 
-        // otherUser does NOT own this project
         boolean exists = projectRepository.existsByIdAndOwnerId(
                 ownerProject.getId(), otherUser.getId());
 
         assertThat(exists).isFalse();
     }
 
-    // ─────────────────────────────────────────
-    // searchByOwnerAndName tests
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("searchByOwnerAndName: should find by partial name case-insensitively")
     void searchByOwnerAndName_partialMatch_returnsResults() {
-        // "alpha" should match "Alpha Project" (case-insensitive)
         Page<Project> result = projectRepository.searchByOwnerAndName(
                 owner.getId(), "alpha", PageRequest.of(0, 10));
 
@@ -181,7 +161,6 @@ class ProjectRepositoryTest {
     @Test
     @DisplayName("searchByOwnerAndName: should not return other user's projects")
     void searchByOwnerAndName_doesNotLeakOtherUsersProjects() {
-        // "project" matches all 4 projects, but should only return owner's 3
         Page<Project> result = projectRepository.searchByOwnerAndName(
                 owner.getId(), "project", PageRequest.of(0, 10));
 

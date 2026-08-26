@@ -61,10 +61,6 @@ class ProjectControllerTest {
 
     private final CustomUserDetails userDetails = new CustomUserDetails(testUser);
 
-    // ─────────────────────────────────────────
-    // GET /api/projects
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("GET /projects: 200 with paginated response")
     void getProjects_authenticated_returns200() throws Exception {
@@ -91,10 +87,6 @@ class ProjectControllerTest {
         mockMvc.perform(get("/api/projects"))
                 .andExpect(status().isUnauthorized());
     }
-
-    // ─────────────────────────────────────────
-    // POST /api/projects
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("POST /projects: 201 Created with valid request")
@@ -132,10 +124,6 @@ class ProjectControllerTest {
                 .andExpect(jsonPath("$.errors.name").exists());
     }
 
-    // ─────────────────────────────────────────
-    // GET /api/projects/{id}
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("GET /projects/{id}: 404 when not found")
     void getProjectById_notFound_returns404() throws Exception {
@@ -160,10 +148,6 @@ class ProjectControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.status").value(403));
     }
-
-    // ─────────────────────────────────────────
-    // DELETE /api/projects/{id}
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("DELETE /projects/{id}: 204 No Content on success")

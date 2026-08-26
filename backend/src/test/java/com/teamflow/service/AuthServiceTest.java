@@ -29,7 +29,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-/** Unit tests for AuthService. */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AuthService Tests")
 class AuthServiceTest {
@@ -41,10 +40,6 @@ class AuthServiceTest {
 
     @InjectMocks
     private AuthService authService;
-
-    // ─────────────────────────────────────────
-    // register() tests
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("register: should save user and return token when email is available")
@@ -117,10 +112,6 @@ class AuthServiceTest {
 
         verify(passwordEncoder).encode("plain-password");
     }
-
-    // ─────────────────────────────────────────
-    // login() tests
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("login: should return token when credentials are valid")

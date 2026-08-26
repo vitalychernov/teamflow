@@ -6,7 +6,6 @@ import { Spinner } from '../components/Spinner'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import type { Project } from '../api/types'
 
-// Completion badge color: gray → blue → green
 function DoneBadge({ total, done }: { total: number; done: number }) {
   if (!total) return null   // handles 0, undefined, null
   const pct = Math.round((done / total) * 100)
@@ -25,15 +24,12 @@ export function ProjectsPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  // Create form
   const [showCreate, setShowCreate] = useState(false)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
 
-  // Delete confirmation
   const [deletingProjectId, setDeletingProjectId] = useState<number | null>(null)
 
-  // Edit form
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [editName, setEditName] = useState('')
   const [editDescription, setEditDescription] = useState('')
@@ -86,7 +82,6 @@ export function ProjectsPage() {
         </button>
       </div>
 
-      {/* Create project form */}
       {showCreate && (
         <div className="mb-6 bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
           <h2 className="font-semibold text-gray-800 mb-3">New Project</h2>
@@ -142,7 +137,6 @@ export function ProjectsPage() {
             className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow"
           >
             {editingProject?.id === project.id ? (
-              /* ── Edit mode ── */
               <form
                 onSubmit={(e) => {
                   e.preventDefault()
@@ -183,12 +177,10 @@ export function ProjectsPage() {
                 </div>
               </form>
             ) : (
-              /* ── Read mode ── */
               <div
                 className="cursor-pointer"
                 onClick={() => navigate(`/projects/${project.id}`)}
               >
-                {/* Top row: name + Done badge */}
                 <div className="flex items-start justify-between gap-2 mb-1">
                   <h3 className="font-semibold text-gray-900 leading-tight">{project.name}</h3>
                   <DoneBadge total={project.totalTasks} done={project.doneTasks} />
@@ -198,7 +190,6 @@ export function ProjectsPage() {
                   <p className="text-sm text-gray-500 mb-3 line-clamp-2">{project.description}</p>
                 )}
 
-                {/* Progress bar */}
                 {project.totalTasks > 0 && (
                   <div className="w-full bg-gray-100 rounded-full h-1.5 mb-3">
                     <div

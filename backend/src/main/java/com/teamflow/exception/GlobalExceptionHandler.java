@@ -16,10 +16,6 @@ import java.util.stream.Collectors;
 /**
  * Centralized exception handler for all REST controllers.
  *
- * @RestControllerAdvice = @ControllerAdvice + @ResponseBody.
- * Any exception thrown from a controller or service is caught here
- * and converted to a consistent JSON ErrorResponse.
- *
  * Without this, Spring would return its default HTML error page or
  * a partially structured error — inconsistent for API clients.
  *
@@ -29,12 +25,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // ─────────────────────────────────────────
-    // 400 Bad Request
-    // ─────────────────────────────────────────
-
     /**
-     * Handles @Valid / @Validated failures.
      * Extracts field-level errors: { "email": "must be valid", "name": "required" }
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -61,10 +52,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────
-    // 401 Unauthorized
-    // ─────────────────────────────────────────
-
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
@@ -75,10 +62,6 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
-
-    // ─────────────────────────────────────────
-    // 403 Forbidden
-    // ─────────────────────────────────────────
 
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ErrorResponse> handleForbidden(ForbiddenException ex) {
@@ -91,10 +74,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────
-    // 404 Not Found
-    // ─────────────────────────────────────────
-
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -106,10 +85,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────
-    // 409 Conflict
-    // ─────────────────────────────────────────
-
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailConflict(EmailAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
@@ -120,10 +95,6 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
-
-    // ─────────────────────────────────────────
-    // 500 Internal Server Error — catch-all
-    // ─────────────────────────────────────────
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex) {

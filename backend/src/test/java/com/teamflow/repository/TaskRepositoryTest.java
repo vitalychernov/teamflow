@@ -48,7 +48,6 @@ class TaskRepositoryTest {
                 .owner(owner)
                 .build());
 
-        // 5 tasks with various status/priority combinations
         entityManager.persistAndFlush(Task.builder()
                 .title("Task 1 - TODO HIGH")
                 .project(project)
@@ -86,10 +85,6 @@ class TaskRepositoryTest {
                 .priority(TaskPriority.MEDIUM)
                 .build());
     }
-
-    // ─────────────────────────────────────────
-    // findByProjectIdWithFilters — the core filter query
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("filter: no filters → returns all tasks for project")
@@ -153,10 +148,6 @@ class TaskRepositoryTest {
         assertThat(result.isEmpty()).isTrue();
     }
 
-    // ─────────────────────────────────────────
-    // findByAssigneeId tests
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("findByAssigneeId: returns tasks assigned to user")
     void findByAssigneeId_returnsAssigneeTasks() {
@@ -169,10 +160,6 @@ class TaskRepositoryTest {
                 .extracting(t -> t.getAssignee().getId())
                 .containsOnly(assignee.getId());
     }
-
-    // ─────────────────────────────────────────
-    // countByProjectIdAndStatus tests
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("countByProjectIdAndStatus: returns correct count per status")
@@ -188,10 +175,6 @@ class TaskRepositoryTest {
         assertThat(doneCount).isEqualTo(2);
         assertThat(inProgressCount).isEqualTo(1);
     }
-
-    // ─────────────────────────────────────────
-    // existsByIdAndProjectId tests
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("existsByIdAndProjectId: returns true for task belonging to project")
@@ -214,7 +197,7 @@ class TaskRepositoryTest {
                 .getContent().get(0);
 
         boolean exists = taskRepository.existsByIdAndProjectId(
-                task.getId(), 99999L); // non-existent project
+                task.getId(), 99999L);
 
         assertThat(exists).isFalse();
     }

@@ -1,8 +1,6 @@
-# ==========================================
 # EXAMPLE config — copy this to application-local.yml
 # and fill in your values for local development.
 # application-local.yml is in .gitignore (never committed).
-# ==========================================
 
 spring:
   datasource:

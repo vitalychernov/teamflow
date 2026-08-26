@@ -26,7 +26,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/** Controller tests for AuthController. */
 @WebMvcTest(AuthController.class)
 @Import(SecurityConfig.class)
 @ActiveProfiles("test")
@@ -46,10 +45,6 @@ class AuthControllerTest {
     private JwtService jwtService;
     @MockBean
     private CustomUserDetailsService userDetailsService;
-
-    // ─────────────────────────────────────────
-    // POST /api/auth/register
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("POST /register: 201 Created with valid request")
@@ -80,7 +75,7 @@ class AuthControllerTest {
     void register_invalidEmail_returns400() throws Exception {
         RegisterRequest request = new RegisterRequest();
         request.setName("Alice");
-        request.setEmail("not-an-email");  // invalid
+        request.setEmail("not-an-email");
         request.setPassword("password123");
 
         mockMvc.perform(post("/api/auth/register")
@@ -96,7 +91,7 @@ class AuthControllerTest {
     @DisplayName("POST /register: 400 when name is blank")
     void register_blankName_returns400() throws Exception {
         RegisterRequest request = new RegisterRequest();
-        request.setName("");  // blank
+        request.setName("");
         request.setEmail("alice@example.com");
         request.setPassword("password123");
 
@@ -114,7 +109,7 @@ class AuthControllerTest {
         RegisterRequest request = new RegisterRequest();
         request.setName("Alice");
         request.setEmail("alice@example.com");
-        request.setPassword("123");  // < 6 chars
+        request.setPassword("123");
 
         mockMvc.perform(post("/api/auth/register")
                         .with(csrf())
@@ -142,10 +137,6 @@ class AuthControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.status").value(409));
     }
-
-    // ─────────────────────────────────────────
-    // POST /api/auth/login
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("POST /login: 200 OK with valid credentials")

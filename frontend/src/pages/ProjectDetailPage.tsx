@@ -144,7 +144,6 @@ function TaskCard({ task, users, isEditing, isSaving, onStartEdit, onCancelEdit,
       className={`bg-white border border-gray-200 rounded-lg p-3 shadow-sm transition-opacity ${isDragging ? 'opacity-30' : ''}`}
     >
       {isEditing ? (
-        /* ── Edit mode ── */
         <form
           onSubmit={(e) => {
             e.preventDefault()
@@ -203,7 +202,6 @@ function TaskCard({ task, users, isEditing, isSaving, onStartEdit, onCancelEdit,
           </div>
         </form>
       ) : (
-        /* ── Read mode ── */
         <>
           <div className="flex items-start gap-2 mb-2">
             <div
@@ -251,23 +249,18 @@ export function ProjectDetailPage() {
   const queryClient = useQueryClient()
   const { user } = useAuth()
 
-  // Create form state
   const [showCreate, setShowCreate] = useState(false)
   const [title, setTitle] = useState('')
   const [taskDescription, setTaskDescription] = useState('')
   const [priority, setPriority] = useState<TaskPriority>('MEDIUM')
   const [assigneeId, setAssigneeId] = useState<number | ''>('')
 
-  // Filter state
   const [filterAssignedToMe, setFilterAssignedToMe] = useState(false)
 
-  // Delete confirmation
   const [deletingTaskId, setDeletingTaskId] = useState<number | null>(null)
 
-  // Edit state
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null)
 
-  // Active drag task (for DragOverlay)
   const [activeTask, setActiveTask] = useState<Task | null>(null)
 
   // DnD sensors — require 8px movement to start drag (prevents accidental drags on click)
@@ -275,7 +268,6 @@ export function ProjectDetailPage() {
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   )
 
-  // Queries
   const { data: project, isLoading: projectLoading } = useQuery({
     queryKey: ['project', projectId],
     queryFn: () => projectsApi.getById(projectId),
@@ -293,7 +285,6 @@ export function ProjectDetailPage() {
     queryFn: usersApi.getAll,
   })
 
-  // Mutations
   const createTask = useMutation({
     mutationFn: (data: { title: string; description: string; priority: TaskPriority; assigneeId?: number }) =>
       tasksApi.create(projectId, data),
@@ -379,7 +370,6 @@ export function ProjectDetailPage() {
 
   return (
     <div>
-      {/* Header */}
       <div className="mb-5">
         <button
           onClick={() => navigate('/projects')}
@@ -393,7 +383,6 @@ export function ProjectDetailPage() {
         )}
       </div>
 
-      {/* Toolbar */}
       <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
         <button
           onClick={() => setFilterAssignedToMe((v) => !v)}
@@ -413,7 +402,6 @@ export function ProjectDetailPage() {
         </button>
       </div>
 
-      {/* Create task form */}
       {showCreate && (
         <div className="mb-4 bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
           <form
@@ -486,7 +474,6 @@ export function ProjectDetailPage() {
 
       {tasksLoading && <Spinner />}
 
-      {/* Kanban board */}
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <div className="overflow-x-auto">
           <div className="grid grid-cols-3 gap-4 min-w-[540px]">
@@ -516,7 +503,6 @@ export function ProjectDetailPage() {
           </div>
         </div>
 
-        {/* Floating card while dragging */}
         <DragOverlay dropAnimation={null}>
           {activeTask ? <TaskCardPreview task={activeTask} /> : null}
         </DragOverlay>

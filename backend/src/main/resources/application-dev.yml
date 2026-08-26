@@ -1,8 +1,6 @@
-# ==========================================
 # DEV profile — local development only.
 # This file is committed to git (no secrets here).
 # Uses local PostgreSQL via Docker Compose.
-# ==========================================
 
 spring:
   datasource:
@@ -19,7 +17,6 @@ spring:
       ddl-auto: create-drop
     show-sql: true
 
-# Verbose logging in dev
 logging:
   level:
     com.teamflow: DEBUG

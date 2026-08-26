@@ -79,7 +79,6 @@ public class TaskService {
             builder.priority(request.getPriority());
         }
 
-        // Resolve assignee if provided
         if (request.getAssigneeId() != null) {
             User assignee = userRepository.findById(request.getAssigneeId())
                     .orElseThrow(() -> new ResourceNotFoundException(
@@ -114,7 +113,7 @@ public class TaskService {
                             "Assignee not found with id: " + request.getAssigneeId()));
             task.setAssignee(assignee);
         } else {
-            task.setAssignee(null);  // explicit unassign
+            task.setAssignee(null);
         }
 
         return taskMapper.toResponse(taskRepository.save(task));
@@ -127,10 +126,6 @@ public class TaskService {
         validateProjectWriteAccess(task.getProject(), currentUser);
         taskRepository.delete(task);
     }
-
-    // ─────────────────────────────────────────
-    // Private helpers
-    // ─────────────────────────────────────────
 
     private Project findProjectOrThrow(Long projectId) {
         return projectRepository.findById(projectId)

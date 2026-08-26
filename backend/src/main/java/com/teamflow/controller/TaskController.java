@@ -55,9 +55,9 @@ public class TaskController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String direction,
-            @RequestParam(required = false) TaskStatus status,       // e.g. ?status=IN_PROGRESS
-            @RequestParam(required = false) TaskPriority priority,   // e.g. ?priority=HIGH
-            @RequestParam(required = false) Long assigneeId,         // e.g. ?assigneeId=3
+            @RequestParam(required = false) TaskStatus status,
+            @RequestParam(required = false) TaskPriority priority,
+            @RequestParam(required = false) Long assigneeId,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
 
         Sort sort = direction.equalsIgnoreCase("asc")

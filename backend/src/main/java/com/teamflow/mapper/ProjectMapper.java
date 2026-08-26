@@ -5,7 +5,6 @@ import com.teamflow.entity.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-/** Maps Project entity to ProjectResponse DTO. */
 @Component
 @RequiredArgsConstructor
 public class ProjectMapper {

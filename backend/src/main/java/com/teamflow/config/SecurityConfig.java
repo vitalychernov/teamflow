@@ -27,25 +27,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-/**
- * Spring Security configuration for JWT-based stateless auth.
- *
- * Key concepts:
- * - STATELESS session: no cookies, no server-side session, every request
- *   must carry a JWT token
- * - CSRF disabled: CSRF attacks rely on cookies/sessions — irrelevant for
- *   stateless JWT APIs
- * - CORS configured: allows the React frontend to call the API from a
- *   different origin (Vercel domain)
- *
- * Spring Boot 3.x / Security 6.x style:
- * - No more WebSecurityConfigurerAdapter (removed)
- * - SecurityFilterChain @Bean instead
- * - @EnableMethodSecurity instead of @EnableGlobalMethodSecurity
- */
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity          // enables @PreAuthorize on controller methods
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -58,30 +42,23 @@ public class SecurityConfig {
             // Disable CSRF — not needed for stateless JWT APIs
             .csrf(AbstractHttpConfigurer::disable)
 
-            // Configure CORS — allow frontend origin
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-            // Stateless session — Spring Security never creates an HttpSession
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-            // Authorization rules
             .authorizeHttpRequests(auth -> auth
-                    // Auth endpoints — public
                     .requestMatchers("/api/auth/**").permitAll()
                     // Actuator health check — public (used by Render deploy health checks)
                     .requestMatchers("/actuator/health").permitAll()
-                    // Swagger UI — public
                     .requestMatchers(
                             "/swagger-ui/**",
                             "/swagger-ui.html",
                             "/v3/api-docs/**"
                     ).permitAll()
-                    // Admin endpoints — ADMIN role only
                     .requestMatchers("/api/admin/**").hasRole("ADMIN")
                     // OPTIONS preflight requests — always permit (for CORS)
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    // Everything else — must be authenticated
                     .anyRequest().authenticated()
             )
 
@@ -91,7 +68,6 @@ public class SecurityConfig {
             .exceptionHandling(ex -> ex
                     .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
 
-            // Wire up our AuthenticationProvider (uses UserDetailsService + BCrypt)
             .authenticationProvider(authenticationProvider())
 
             // Add JWT filter BEFORE Spring's default username/password filter

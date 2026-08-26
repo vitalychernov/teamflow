@@ -13,9 +13,6 @@ import java.util.List;
 /**
  * Adapter between our User entity and Spring Security's UserDetails interface.
  *
- * Spring Security knows nothing about our User entity — it works with UserDetails.
- * This class bridges them. It wraps User and exposes what Spring Security needs.
- *
  * Why not make User implement UserDetails directly?
  * That would couple the domain entity to Spring Security — a framework concern.
  * Keeping them separate allows changing either without affecting the other.
@@ -29,7 +26,6 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
-    // Convenience methods used in service layer
     public Long getId() {
         return user.getId();
     }

@@ -9,17 +9,9 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * User entity — maps to the 'users' table in PostgreSQL.
- *
  * Why 'users' and not 'user'?
  * 'user' is a reserved word in PostgreSQL — it would require
  * quoting everywhere. 'users' is a common convention.
- *
- * Lombok annotations used:
- * - @Data: generates getters, setters, equals, hashCode, toString
- * - @Builder: enables builder pattern (User.builder().name("...").build())
- * - @NoArgsConstructor: required by JPA (must have no-arg constructor)
- * - @AllArgsConstructor: required by @Builder when @NoArgsConstructor is present
  */
 @Entity
 @Table(name = "users")
@@ -33,17 +25,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * nullable = false → NOT NULL constraint in DB.
-     * length = 100 → VARCHAR(100).
-     */
     @Column(nullable = false, length = 100)
     private String name;
 
-    /**
-     * unique = true → UNIQUE constraint in DB.
-     * We look up users by email during login.
-     */
     @Column(nullable = false, unique = true, length = 255)
     private String email;
 
@@ -64,17 +48,9 @@ public class User {
     @Builder.Default
     private Role role = Role.USER;
 
-    /**
-     * @Column(updatable = false): Hibernate never updates this field.
-     * Set once on insert via @PrePersist lifecycle callback.
-     */
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    /**
-     * JPA lifecycle callback — runs automatically before INSERT.
-     * This avoids needing a separate audit framework for simple cases.
-     */
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

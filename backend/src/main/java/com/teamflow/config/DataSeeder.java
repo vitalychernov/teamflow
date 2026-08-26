@@ -41,7 +41,6 @@ public class DataSeeder implements ApplicationRunner {
 
         log.info("DataSeeder: seeding demo data...");
 
-        // ── Users ──────────────────────────────────────────────────────────────
         userRepository.save(User.builder()
                 .name("Admin")
                 .email("admin@teamflow.com")
@@ -67,7 +66,6 @@ public class DataSeeder implements ApplicationRunner {
                 .password(passwordEncoder.encode("demo123"))
                 .build());
 
-        // ── Project 1: Website Redesign ────────────────────────────────────────
         Project website = projectRepository.save(Project.builder()
                 .name("Website Redesign")
                 .description("Modernize the public website: new design system, improved performance, mobile-first.")
@@ -118,7 +116,6 @@ public class DataSeeder implements ApplicationRunner {
                 .assignee(sarah)
                 .build());
 
-        // ── Project 2: Mobile App v2 ───────────────────────────────────────────
         Project mobile = projectRepository.save(Project.builder()
                 .name("Mobile App v2")
                 .description("Major release: push notifications, offline mode, and redesigned task board.")
@@ -161,7 +158,6 @@ public class DataSeeder implements ApplicationRunner {
                 .assignee(michael)
                 .build());
 
-        // ── Project 3: Q1 Marketing Campaign ──────────────────────────────────
         Project marketing = projectRepository.save(Project.builder()
                 .name("Q1 Marketing Campaign")
                 .description("Launch campaign across email, social media, and paid ads targeting enterprise customers.")

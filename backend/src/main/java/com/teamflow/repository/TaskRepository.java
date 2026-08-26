@@ -32,15 +32,10 @@ import org.springframework.stereotype.Repository;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     /**
-     * Fetch tasks for a project with optional status and priority filters.
-     *
      * Filter logic:
      * - status = null → ignore status filter (return all statuses)
      * - status = TaskStatus.TODO → return only TODO tasks
      * Same for priority.
-     *
-     * The 'cast(null as string)' trick: H2 (test DB) needs explicit cast
-     * for null comparisons. For PostgreSQL this works as-is.
      */
     @Query("SELECT t FROM Task t WHERE t.project.id = :projectId " +
            "AND (:status IS NULL OR t.status = :status) " +
@@ -61,10 +56,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     /** Count all tasks in a project — used for completion percentage. */
     long countByProjectId(Long projectId);
 
-    /**
-     * Count tasks by status for a project — useful for board statistics.
-     * Returns a single long value, no pagination needed.
-     */
+    /** Count tasks by status for a project — useful for board statistics. */
     long countByProjectIdAndStatus(Long projectId, TaskStatus status);
 
     /**

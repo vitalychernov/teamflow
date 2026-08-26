@@ -13,16 +13,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
- * JWT utility service.
- * Handles token generation, parsing, and validation.
- *
  * Library: JJWT 0.12.x (io.jsonwebtoken)
  * Algorithm: HS256 (HMAC + SHA-256, symmetric key)
- *
- * Token structure:
- *   Header: {"alg":"HS256","typ":"JWT"}
- *   Payload: {"sub":"user@email.com","iat":...,"exp":...}
- *   Signature: HMAC-SHA256(header.payload, secret)
  */
 @Service
 public class JwtService {
@@ -33,10 +25,6 @@ public class JwtService {
     @Value("${app.jwt.expiration}")
     private long expiration;
 
-    /**
-     * Generates a signed JWT token for the given email (subject).
-     * The token encodes: who (subject), when issued, when expires.
-     */
     public String generateToken(String email) {
         return Jwts.builder()
                 .subject(email)
@@ -46,10 +34,7 @@ public class JwtService {
                 .compact();
     }
 
-    /**
-     * Extracts the email (subject) from a JWT token.
-     * Returns null if the token is invalid or expired.
-     */
+    /** Returns null if the token is invalid or expired. */
     public String extractEmail(String token) {
         try {
             return extractAllClaims(token).getSubject();
@@ -58,10 +43,6 @@ public class JwtService {
         }
     }
 
-    /**
-     * Validates the token against the given UserDetails.
-     * Checks: email matches + token is not expired.
-     */
     public boolean isTokenValid(String token, UserDetails userDetails) {
         try {
             String email = extractEmail(token);
@@ -72,10 +53,6 @@ public class JwtService {
             return false;
         }
     }
-
-    // ─────────────────────────────────────────
-    // Private helpers
-    // ─────────────────────────────────────────
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
@@ -90,7 +67,6 @@ public class JwtService {
     }
 
     /**
-     * Builds the signing key from the secret string.
      * HMAC-SHA256 requires a key of at least 256 bits (32 bytes).
      * Our secret in application.yml is ≥ 32 characters, satisfying this.
      */

@@ -1,5 +1,3 @@
-// ─── Auth ───────────────────────────────────────────────────────────────────
-
 export interface RegisterRequest {
   name: string
   email: string
@@ -18,8 +16,6 @@ export interface AuthResponse {
   name: string
   role: string
 }
-
-// ─── Projects ───────────────────────────────────────────────────────────────
 
 export interface ProjectOwner {
   id: number
@@ -47,8 +43,6 @@ export interface UpdateProjectRequest {
   name: string
   description?: string
 }
-
-// ─── Tasks ──────────────────────────────────────────────────────────────────
 
 export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE'
 export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH'
@@ -81,8 +75,6 @@ export interface UpdateTaskRequest {
   assigneeId?: number | null
 }
 
-// ─── Pagination ──────────────────────────────────────────────────────────────
-
 export interface PageResponse<T> {
   content: T[]
   page: number
@@ -92,8 +84,6 @@ export interface PageResponse<T> {
   last: boolean
 }
 
-// ─── Admin ───────────────────────────────────────────────────────────────────
-
 export interface User {
   id: number
   name: string
@@ -101,8 +91,6 @@ export interface User {
   role: string
   createdAt: string
 }
-
-// ─── Error ───────────────────────────────────────────────────────────────────
 
 export interface ApiError {
   status: number

@@ -5,10 +5,6 @@ import com.teamflow.entity.Task;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-/**
- * Maps Task entity to TaskResponse DTO.
- * Depends on UserMapper for the optional assignee field.
- */
 @Component
 @RequiredArgsConstructor
 public class TaskMapper {

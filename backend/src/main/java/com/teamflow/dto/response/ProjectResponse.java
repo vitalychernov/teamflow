@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * Full project response — used for GET /api/projects/{id}.
- * Contains nested owner info (UserResponse).
+ * Used for GET /api/projects/{id}.
  *
  * Why not embed the full list of tasks here?
  * Tasks are fetched separately via GET /api/projects/{id}/tasks

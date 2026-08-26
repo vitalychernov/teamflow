@@ -55,10 +55,6 @@ class TaskControllerTest {
 
     private final CustomUserDetails userDetails = new CustomUserDetails(testUser);
 
-    // ─────────────────────────────────────────
-    // GET /api/projects/{projectId}/tasks
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("GET /projects/{id}/tasks: 200 with paginated response")
     void getTasks_authenticated_returns200() throws Exception {
@@ -86,10 +82,6 @@ class TaskControllerTest {
         mockMvc.perform(get("/api/projects/1/tasks"))
                 .andExpect(status().isUnauthorized());
     }
-
-    // ─────────────────────────────────────────
-    // POST /api/projects/{projectId}/tasks
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("POST /projects/{id}/tasks: 201 Created with valid request")
@@ -129,10 +121,6 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$.errors.title").exists());
     }
 
-    // ─────────────────────────────────────────
-    // GET /api/tasks/{id}
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("GET /tasks/{id}: 200 OK")
     void getTaskById_found_returns200() throws Exception {
@@ -161,10 +149,6 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$.message").value("Task not found with id: 99"));
     }
 
-    // ─────────────────────────────────────────
-    // PUT /api/tasks/{id}
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("PUT /tasks/{id}: 200 OK with valid request")
     void updateTask_validRequest_returns200() throws Exception {
@@ -188,10 +172,6 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$.title").value("Updated Task"))
                 .andExpect(jsonPath("$.status").value("IN_PROGRESS"));
     }
-
-    // ─────────────────────────────────────────
-    // DELETE /api/tasks/{id}
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("DELETE /tasks/{id}: 204 No Content on success")

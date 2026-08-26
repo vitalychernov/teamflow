@@ -80,10 +80,6 @@ class ProjectServiceTest {
         adminDetails  = new CustomUserDetails(adminUser);
     }
 
-    // ─────────────────────────────────────────
-    // getProjectById tests
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("getProjectById: owner can access their own project")
     void getProjectById_owner_returnsProject() {
@@ -133,10 +129,6 @@ class ProjectServiceTest {
                 .hasMessageContaining("99");
     }
 
-    // ─────────────────────────────────────────
-    // createProject tests
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("createProject: saves and returns project")
     void createProject_savesAndReturnsProject() {
@@ -155,10 +147,6 @@ class ProjectServiceTest {
         assertThat(result).isNotNull();
         verify(projectRepository).save(any(Project.class));
     }
-
-    // ─────────────────────────────────────────
-    // updateProject tests
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("updateProject: owner can update their project")
@@ -192,10 +180,6 @@ class ProjectServiceTest {
         verify(projectRepository, never()).save(any());
     }
 
-    // ─────────────────────────────────────────
-    // deleteProject tests
-    // ─────────────────────────────────────────
-
     @Test
     @DisplayName("deleteProject: owner can delete their project")
     void deleteProject_owner_deletesSuccessfully() {
@@ -226,10 +210,6 @@ class ProjectServiceTest {
 
         verify(projectRepository, never()).delete(any());
     }
-
-    // ─────────────────────────────────────────
-    // getProjects pagination tests
-    // ─────────────────────────────────────────
 
     @Test
     @DisplayName("getProjects: all users see all projects (shared workspace)")

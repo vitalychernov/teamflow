@@ -14,8 +14,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for JwtService.
- *
  * Challenge: JwtService uses @Value fields (secret, expiration).
  * @Value injection only works inside Spring context, but we want
  * a fast unit test without Spring.
@@ -37,7 +35,6 @@ class JwtServiceTest {
     @BeforeEach
     void setUp() {
         jwtService = new JwtService();
-        // Inject @Value fields manually via reflection
         ReflectionTestUtils.setField(jwtService, "secret", TEST_SECRET);
         ReflectionTestUtils.setField(jwtService, "expiration", TEST_EXPIRATION);
     }
@@ -86,7 +83,6 @@ class JwtServiceTest {
     @Test
     @DisplayName("isTokenValid: should return false when email does not match")
     void isTokenValid_emailMismatch_returnsFalse() {
-        // Token generated for one user, validated against another
         String token = jwtService.generateToken("alice@example.com");
         UserDetails differentUser = buildUserDetails("bob@example.com");
 
@@ -124,7 +120,6 @@ class JwtServiceTest {
         assertThat(valid).isFalse();
     }
 
-    // Creates a Spring Security UserDetails with the given username
     private UserDetails buildUserDetails(String email) {
         return User.builder()
                 .username(email)

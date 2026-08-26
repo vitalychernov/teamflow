@@ -1,9 +1,7 @@
-# ==========================================
 # PROD profile — Render.com deployment.
 # NO secrets here — all sensitive values come
 # from environment variables set in Render dashboard.
 # This file IS committed to git.
-# ==========================================
 
 spring:
   datasource:
@@ -27,7 +25,6 @@ spring:
       ddl-auto: update
     show-sql: false
 
-# Minimal logging in production
 logging:
   level:
     com.teamflow: INFO
