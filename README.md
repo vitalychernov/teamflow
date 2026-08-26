@@ -39,9 +39,9 @@ A full-stack project management application inspired by Jira and Asana. Features
 
 **Infrastructure**
 
-- Backend: [Render](https://render.com)
+- Backend: self-hosted VPS (systemd service, deployed via GitHub Actions)
 - Frontend: [Vercel](https://vercel.com)
-- Database: PostgreSQL on Render
+- Database: PostgreSQL on [Neon](https://neon.tech)
 
 ---
 
@@ -172,6 +172,6 @@ Full interactive docs available at `/swagger-ui.html`.
 
 The app deploys automatically on every push to `main`.
 
-- **Render** (backend): connect GitHub repo → set `SPRING_PROFILES_ACTIVE=prod` and `APP_JWT_SECRET` → deploy
-- **Render** (database): free PostgreSQL instance, connection URL injected via `DATABASE_URL`
-- **Vercel** (frontend): connect GitHub repo → set Root Directory to `frontend` → set `VITE_API_URL` to the Render backend URL → deploy
+- **Backend**: [GitHub Actions](.github/workflows/backend-ci.yml) builds the jar, copies it to the VPS via SCP, and restarts the `teamflow` systemd service ([deploy/teamflow.service](deploy/teamflow.service)) over SSH
+- **Database**: PostgreSQL on Neon — connection details set via `DB_HOST` / `DB_PORT` / `DB_NAME` env vars in the VPS `.env` file
+- **Vercel** (frontend): connect GitHub repo → set Root Directory to `frontend` → set `VITE_API_URL` to the backend URL → deploy

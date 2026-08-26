@@ -49,7 +49,7 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/auth/**").permitAll()
-                    // Actuator health check — public (used by Render deploy health checks)
+                    // Actuator health check — public
                     .requestMatchers("/actuator/health").permitAll()
                     .requestMatchers(
                             "/swagger-ui/**",

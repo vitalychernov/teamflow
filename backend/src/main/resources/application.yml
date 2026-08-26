@@ -37,7 +37,7 @@ server:
     include-message: always
     include-binding-errors: always
 
-# Actuator — health check endpoint for Render
+# Actuator — health check endpoint
 management:
   endpoints:
     web:

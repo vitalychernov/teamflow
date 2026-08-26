@@ -126,8 +126,7 @@
 
         <!-- ==========================================
              ACTUATOR: Exposes /actuator/health endpoint.
-             Used by Render (and other platforms) to check
-             that the service is up after deployment.
+             Used to check that the service is up after deployment.
              Only /health is exposed — no sensitive info.
         ========================================== -->
         <dependency>
